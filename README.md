@@ -9,7 +9,7 @@ GreenQuest is a mobile application for creating and signing up for eco-friendly 
 - Interactive mapping of ongoing events
 ## Installation
 To install the application, follow these steps:
-
+- Be sure to have Android version 11.0 as well as API 30
 - Clone the Github repository to your local computer
 - Open the project in your preferred code editor
 - Run `flutter pub get` to install dependencies
