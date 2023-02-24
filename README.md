@@ -1,16 +1,31 @@
-# green_quest_frontend
+# GreenQuest
+GreenQuest is a mobile application for creating and signing up for eco-friendly cleaning events of all types. This application is developed in Flutter and is designed to help users organize and participate in environmental cleaning events.
 
-A new Flutter project.
+## Features
+- Creation of environmental cleaning events
+- Sign up for existing cleaning events
+- Tracking of events you participate in
+- Location of nearby events
+- Interactive mapping of ongoing events
+## Installation
+To install the application, follow these steps:
 
-## Getting Started
+- Clone the Github repository to your local computer
+- Open the project in your preferred code editor
+- Run `flutter pub get` to install dependencies
+- Connect your mobile device or open an emulator
+- Run `flutter run` to launch the application on your device
+## Screenshots
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Contribution
+Contributions are welcome! If you would like to contribute to GreenQuest, please create an issue to discuss the changes you would like to make. We accept pull requests.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## License
+This project is licensed under the MIT license. Please see the LICENSE file for more information.
+
+We hope you enjoy using GreenQuest. If you have any questions or comments, please do not hesitate to contact us at support@greenquest.com.
+
+
+
