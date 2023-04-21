@@ -8,7 +8,7 @@ class FeedPostWidget extends StatelessWidget {
       required this.content,
       this.coverUrl,
       required this.authorName,
-      required this.createdAt});
+      required this.createdAt,});
 
   final String title;
   final String content;
@@ -18,16 +18,17 @@ class FeedPostWidget extends StatelessWidget {
 
   List<Widget> getWidgets() {
     final widgets = <Widget>[];
-    var imageUrl = coverUrl;
+    final imageUrl = coverUrl;
     if (imageUrl != null && imageUrl.isNotEmpty) {
       widgets.add(ClipRRect(
         borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-        child: Image.network(
-          imageUrl,
+            topLeft: Radius.circular(10), topRight: Radius.circular(10),),
+        child: FadeInImage.memoryNetwork(
+          placeholder: kTransparentImage,
+          image: imageUrl,
           fit: BoxFit.fitWidth,
         ),
-      ));
+      ),);
     }
     widgets.add(Padding(
       padding: const EdgeInsets.all(10),
@@ -55,7 +56,7 @@ class FeedPostWidget extends StatelessWidget {
           Text(content)
         ],
       ),
-    ));
+    ),);
     return widgets;
   }
 
@@ -76,6 +77,6 @@ class FeedPostWidget extends StatelessWidget {
         ),
         child: Column(
           children: getWidgets(),
-        ));
+        ),);
   }
 }

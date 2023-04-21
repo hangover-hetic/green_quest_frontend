@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:green_quest_frontend/screens/feed/post_list/components/feed_post_create.dart';
 import 'package:green_quest_frontend/screens/feed/post_list/posts_list.dart';
 
 import 'package:green_quest_frontend/screens/index.dart';
@@ -23,6 +24,12 @@ final GoRouter router = GoRouter(
       path: '/api',
       builder: (BuildContext context, GoRouterState state) {
         return const ApiScreen();
+      },
+    ),
+    GoRoute(
+      path: '/feed/create',
+      builder: (BuildContext context, GoRouterState state) {
+        return const FeedPostCreateScreen();
       },
     ),
     GoRoute(

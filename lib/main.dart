@@ -6,7 +6,7 @@ import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> main() async {
   await dotenv.load();
-  await initializeDateFormatting('fr_FR', null);
+  await initializeDateFormatting('fr_FR');
   runApp(const ProviderScope(child: MyApp()));
 }
 

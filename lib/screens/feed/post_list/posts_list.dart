@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/api/models/main.dart';
 import 'package:green_quest_frontend/api/service.dart';
 
@@ -44,7 +45,7 @@ class FeedPostListScreenState extends State<FeedPostListScreen> {
                             content: post.content,
                             coverUrl: post.coverUrl,
                             authorName:
-                                "${post.author.firstname} ${post.author.lastname}",
+                                '${post.author.firstname} ${post.author.lastname}',
                             createdAt: DateFormat.yMd().format(post.createdAt),
                           ),
                         ],
@@ -62,6 +63,16 @@ class FeedPostListScreenState extends State<FeedPostListScreen> {
             child: CircularProgressIndicator(),
           );
         },
+      ),
+      floatingActionButton: RawMaterialButton(
+        onPressed: () => context.go('/feed/create'),
+        fillColor: Colors.white,
+        padding: const EdgeInsets.all(15),
+        shape: const CircleBorder(),
+        child: const Icon(
+          Icons.add,
+          size: 35,
+        ),
       ),
     );
   }
