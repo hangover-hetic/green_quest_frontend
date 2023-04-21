@@ -32,6 +32,7 @@ class ApiScreenState extends State<ApiScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             print(snapshot.data);
+
             return ListView(
                 children: snapshot.data!
                     .map((post) => Padding(

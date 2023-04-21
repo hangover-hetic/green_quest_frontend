@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:green_quest_frontend/api/api_constants.dart';
 import 'package:green_quest_frontend/api/models/post_test.dart';
+import 'package:green_quest_frontend/api/models/event.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -17,6 +18,28 @@ class ApiService {
         return posts;
       }
     } catch (e) {
+      log(e.toString());
+    }
+    return [];
+  }
+
+  static Future<List<Event>> getListEvents() async {
+    try {
+      final url = Uri.parse("http://10.0.2.2:8245/api/events");
+      final response = await http.get(
+          url,
+          headers: {'Accept': 'application/json'},
+      );
+      print('ma response $response');
+      if (response.statusCode == 200) {
+        print(response.body);
+        final l = json.decode(response.body) as List<dynamic>;
+        final events = List<Event>.from(
+          l.map((m) => Event.fromJson(m as Map<String, dynamic>)));
+        print('mon events $events');
+        return events;
+      }
+    } catch(e) {print("coucou");
       log(e.toString());
     }
     return [];
