@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:green_quest_frontend/screens/getList_api.dart';
+import 'package:green_quest_frontend/screens/feed/post_list/posts_list.dart';
 
-import './screens/index.dart';
+import 'package:green_quest_frontend/screens/index.dart';
 
 // GoRouter configuration
 final GoRouter router = GoRouter(
@@ -26,9 +26,9 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/list_events',
+      path: '/feed/:id',
       builder: (BuildContext context, GoRouterState state) {
-        return const GetListEvents();
+        return const FeedPostListScreen();
       },
     ),
   ],
