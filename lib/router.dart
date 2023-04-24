@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:green_quest_frontend/screens/getList_api.dart';
+import 'package:green_quest_frontend/screens/Events/getList_api.dart';
+import 'package:green_quest_frontend/screens/Events/postEvent_api.dart';
 
 import './screens/index.dart';
 
@@ -29,6 +30,12 @@ final GoRouter router = GoRouter(
       path: '/list_events',
       builder: (BuildContext context, GoRouterState state) {
         return const GetListEvents();
+      },
+    ),
+    GoRoute(
+      path: '/create_event',
+      builder: (BuildContext context, GoRouterState state) {
+        return const CreateEvent();
       },
     ),
   ],

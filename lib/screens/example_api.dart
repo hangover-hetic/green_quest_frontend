@@ -6,7 +6,7 @@ import '../api/models/main.dart';
 import '../providers/index.dart';
 
 class ApiScreen extends StatefulWidget {
-  const ApiScreen({Key? key}) : super(key: key);
+  const ApiScreen({super.key});
 
   @override
   ApiScreenState createState() => ApiScreenState();

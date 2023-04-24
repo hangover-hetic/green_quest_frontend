@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:green_quest_frontend/api/service.dart';
+import 'package:green_quest_frontend/api/eventsService.dart';
 
-import '../api/models/main.dart';
-import '../providers/index.dart';
+import '../../api/models/main.dart';
+import '../../providers/index.dart';
 
 class  GetListEvents extends StatefulWidget {
   const GetListEvents({Key? key}) : super(key: key);
@@ -18,7 +18,7 @@ class GetListEventsState extends State<GetListEvents> {
   @override
   void initState() {
     super.initState();
-    events = ApiService.getListEvents();
+    events = EventsServiceApi.getListEvents();
   }
 
   @override
