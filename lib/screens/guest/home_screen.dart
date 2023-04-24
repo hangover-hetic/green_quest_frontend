@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'login.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -52,7 +53,10 @@ class HomeScreen extends StatelessWidget {
                       backgroundColor: Colors.white,
                     ),
                     onPressed: () {
-                      // Action du bouton
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginScreen()));
                     },
                     child: Text("Log in",
                         style: TextStyle(

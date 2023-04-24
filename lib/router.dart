@@ -10,6 +10,7 @@ import 'package:green_quest_frontend/screens/settings_screen.dart';
 import 'package:green_quest_frontend/screens/shop_screen.dart';
 
 import 'screens/guest/login.dart';
+import 'screens/guest/home_screen.dart';
 
 // GoRouter configuration
 final GoRouter router = GoRouter(
@@ -39,9 +40,9 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/provider',
+      path: '/login',
       builder: (BuildContext context, GoRouterState state) {
-        return const ProviderScreen();
+        return const LoginScreen();
       },
     ),
     GoRoute(
