@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -8,6 +9,18 @@ import 'package:green_quest_frontend/api/models/main.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
+  static void processError(dynamic e) {
+    log(e.toString());
+    Fluttertoast.showToast(
+      msg: e.toString(),
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      fontSize: 16,
+    );
+  }
+
   static Future<void> makeRequest(
     String url,
     void Function(dynamic) callback, [
@@ -18,36 +31,83 @@ class ApiService {
       if (response.statusCode == 200) {
         callback(json.decode(response.body));
       } else {
-        throw Exception('Feed not found');
+        throw Exception('Error');
       }
     } catch (e) {
-      log(e.toString());
-      await Fluttertoast.showToast(
-        msg: e.toString(),
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16,
-      );
+      ApiService.processError(e);
     }
   }
 
-  static Future<List<Post>> getTestUsers() async {
+  static Future<void> makeMultipartRequest(
+    String url,
+    Map<String, String> body,
+    Map<String, File> files,
+    void Function(dynamic) callback, [
+    Map<String, String> headers = const {},
+  ]) async {
     try {
-      final url = Uri.parse(ApiConstants.testUrl);
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final l = json.decode(response.body) as List<dynamic>;
-        final posts = List<Post>.from(
-          l.map((m) => Post.fromJson(m as Map<String, dynamic>)),
+      final uri = Uri.parse(ApiConstants.greenQuest + url);
+      final request = http.MultipartRequest('POST', uri);
+
+      for (final file in files.entries) {
+        final stream = http.ByteStream(file.value.openRead());
+        final length = await file.value.length();
+        final multipartFile = http.MultipartFile(
+          'coverFile',
+          stream,
+          length,
+          filename: file.value.path.split('/').last,
         );
-        return posts;
+        request.files.add(multipartFile);
+      }
+
+      request.fields.addAll(body);
+      request.headers.addAll(headers);
+
+      final response = await request.send();
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final respStr = await response.stream.bytesToString();
+        callback(json.decode(respStr));
+      } else {
+        throw Exception('Error');
       }
     } catch (e) {
-      log(e.toString());
+      ApiService.processError(e);
     }
-    return [];
+  }
+
+  static Future<void> createPost({
+    required String title,
+    required String content,
+    required int feedId,
+    required int authorId,
+    required Function callback,
+    File? cover,
+  }) async {
+    var files = <String, File>{};
+    if (cover != null) {
+      files = {'imageFile': cover};
+    }
+    await ApiService.makeMultipartRequest(
+        'api/feed_posts',
+        {
+          'title': title,
+          'content': content,
+          'feed': '/api/feeds/$feedId',
+          'author': '/api/users/$authorId'
+        },
+        files, (p0) {
+      Fluttertoast.showToast(
+        msg: "Votre post a été créé avec succès",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16,
+      );
+      callback();
+    });
   }
 
   static Future<List<FeedPost>> getFeedPost(int feedId) async {
@@ -66,19 +126,21 @@ class ApiService {
     try {
       final url = Uri.parse('http://10.0.2.2:8245/api/events');
       final response = await http.get(
-          url,
-          headers: {'Accept': 'application/json'},
+        url,
+        headers: {'Accept': 'application/json'},
       );
       print('ma response $response');
       if (response.statusCode == 200) {
         print(response.body);
         final l = json.decode(response.body) as List<dynamic>;
         final events = List<Event>.from(
-          l.map((m) => Event.fromJson(m as Map<String, dynamic>)),);
+          l.map((m) => Event.fromJson(m as Map<String, dynamic>)),
+        );
         print('mon events $events');
         return events;
       }
-    } catch(e) {print('coucou');
+    } catch (e) {
+      print('coucou');
       log(e.toString());
     }
     return [];

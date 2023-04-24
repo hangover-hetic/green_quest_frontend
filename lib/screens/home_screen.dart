@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
               child: const Text('Go to the exemple provider screen'),
             ),
             ElevatedButton(
-              onPressed: () => context.go('/feed/2'),
+              onPressed: () => context.go('/feed/32'),
               child: const Text('Go to the exemple api screen'),
             ),
           ],

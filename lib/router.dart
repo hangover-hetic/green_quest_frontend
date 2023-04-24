@@ -27,15 +27,25 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/feed/create',
+      path: '/feed/create/:id',
+      name: 'feed_create_post',
       builder: (BuildContext context, GoRouterState state) {
-        return const FeedPostCreateScreen();
+        final feedId = state.params['id'];
+        if (feedId == null) return const SizedBox();
+        return FeedPostCreateScreen(
+          feedId: int.parse(feedId),
+        );
       },
     ),
     GoRoute(
       path: '/feed/:id',
+      name: 'feed_post_list',
       builder: (BuildContext context, GoRouterState state) {
-        return const FeedPostListScreen();
+        final feedId = state.params['id'];
+        if (feedId == null) return const SizedBox();
+        return FeedPostListScreen(
+          feedId: int.parse(feedId),
+        );
       },
     ),
   ],

@@ -1,3 +1,4 @@
+import 'package:green_quest_frontend/api/api_constants.dart';
 import 'package:green_quest_frontend/api/models/user.dart';
 
 class FeedPost {
@@ -18,7 +19,9 @@ class FeedPost {
       content: (json['content'] ?? '') as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
-      coverUrl: (json['coverUrl'] ?? '') as String,
+      coverUrl: json['coverUrl'] != null
+          ? ApiConstants.greenQuest + (json['coverUrl'] as String)
+          : null,
       author: User.fromJson(json['author'] as Map<String, dynamic>),
     );
   }
