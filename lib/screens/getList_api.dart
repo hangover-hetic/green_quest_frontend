@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:green_quest_frontend/api/models/main.dart';
 import 'package:green_quest_frontend/api/service.dart';
 
-import '../api/models/main.dart';
-import '../providers/index.dart';
-
 class  GetListEvents extends StatefulWidget {
-  const GetListEvents({Key? key}) : super(key: key);
+  const GetListEvents({super.key});
 
   @override
   GetListEventsState createState() => GetListEventsState();
@@ -41,11 +38,11 @@ class GetListEventsState extends State<GetListEvents> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(events.title, style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text(events.title, style: const TextStyle(fontWeight: FontWeight.bold),),
                       Text(events.description),
                     ],
-                  )))
-                  .toList());
+                  ),),)
+                  .toList(),);
         } else if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
@@ -53,7 +50,7 @@ class GetListEventsState extends State<GetListEvents> {
         // By default, show a loading spinner.
         return const CircularProgressIndicator();
         },
-      ));
+      ),);
 
   }
 }

@@ -11,24 +11,23 @@ class HomeScreen extends StatelessWidget {
         title: const Text('My Screen'),
       ),
       body: Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Text(
-            'I am the home screen',
-            style: TextStyle(fontSize: 24),
-          ),
-          ElevatedButton(
-            onPressed: () => context.go('/provider'),
-            child: const Text('Go to the exemple provider screen'),
-          ),
-          ElevatedButton(
-            onPressed: () => context.go('/api'),
-            child: const Text('Go to the exemple api screen'),
-          ),
-          ElevatedButton(
-            onPressed: () => context.go('/list_events'),
-            child: const Text('Get list eventss'),
-          ),
-        ]),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'I am the home screen',
+              style: TextStyle(fontSize: 24),
+            ),
+            ElevatedButton(
+              onPressed: () => context.go('/provider'),
+              child: const Text('Go to the exemple provider screen'),
+            ),
+            ElevatedButton(
+              onPressed: () => context.go('/feed/32'),
+              child: const Text('Go to the exemple api screen'),
+            ),
+          ],
+        ),
       ),
     );
   }
