@@ -14,6 +14,24 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
+      path: '/ranking',
+      builder: (BuildContext context, GoRouterState state) {
+        return const HomeScreen();
+      },
+    ),
+    GoRoute(
+      path: '/shop',
+      builder: (BuildContext context, GoRouterState state) {
+        return const HomeScreen();
+      },
+    ),
+    GoRoute(
+      path: '/settings',
+      builder: (BuildContext context, GoRouterState state) {
+        return const HomeScreen();
+      },
+    ),
+    GoRoute(
       path: '/provider',
       builder: (BuildContext context, GoRouterState state) {
         return const ProviderScreen();

@@ -16,11 +16,11 @@ class _MenuButtonWidgetState extends State<MenuButtonWidget> {
         child: DropdownButton2(
           customButton: Container(
 
-            height: 46,
-            width: 46,
+            height: 55,
+            width: 55,
             child: const Icon(
               Icons.menu,
-              size: 40,
+              size: 30,
               color: Colors.white,
             ),
             decoration: BoxDecoration(
@@ -57,7 +57,7 @@ class _MenuButtonWidgetState extends State<MenuButtonWidget> {
 
 
             ],
-            padding: const EdgeInsets.only(left: 8, right: 0),
+            padding: const EdgeInsets.only(left: 14, right: 0),
           ),
         ),
       ),
@@ -76,11 +76,11 @@ class MenuItem {
 }
 
 class MenuItems {
-  static const List<MenuItem> firstItems = [home, share, settings];
+  static const List<MenuItem> firstItems = [ranking, shop, settings];
 
 
-  static const home = MenuItem(text: '', icon: Icons.spa_outlined);
-  static const share = MenuItem(text: '', icon: Icons.shopping_cart_outlined);
+  static const ranking = MenuItem(text: '', icon: Icons.spa_outlined);
+  static const shop = MenuItem(text: '', icon: Icons.shopping_cart_outlined);
   static const settings = MenuItem(text: '', icon: Icons.settings_outlined);
 
 
@@ -99,14 +99,14 @@ class MenuItems {
 
   static onChanged(BuildContext context, MenuItem item) {
     switch (item) {
-      case MenuItems.home:
-        //Do something
+      case MenuItems.ranking:
+        Navigator.pushNamed(context, '/ranking');
+        break;
+      case MenuItems.shop:
+        Navigator.pushNamed(context, '/shop');
         break;
       case MenuItems.settings:
-        //Do something
-        break;
-      case MenuItems.share:
-        //Do something
+        Navigator.pushNamed(context, '/settings');
         break;
 
     }
