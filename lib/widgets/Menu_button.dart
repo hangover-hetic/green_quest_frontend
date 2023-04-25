@@ -1,5 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MenuButtonWidget extends StatefulWidget {
   const MenuButtonWidget({Key? key}) : super(key: key);
@@ -100,15 +101,14 @@ class MenuItems {
   static onChanged(BuildContext context, MenuItem item) {
     switch (item) {
       case MenuItems.ranking:
-        Navigator.pushNamed(context, '/ranking');
+        context.go('/ranking');
         break;
       case MenuItems.shop:
-        Navigator.pushNamed(context, '/shop');
+        context.go('/shop');
         break;
       case MenuItems.settings:
-        Navigator.pushNamed(context, '/settings');
+        context.go('/settings');
         break;
-
     }
   }
 }

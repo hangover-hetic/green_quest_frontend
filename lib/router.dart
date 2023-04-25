@@ -4,6 +4,9 @@ import 'package:green_quest_frontend/screens/feed/post_list/components/feed_post
 import 'package:green_quest_frontend/screens/feed/post_list/posts_list.dart';
 
 import 'package:green_quest_frontend/screens/index.dart';
+import 'package:green_quest_frontend/screens/ranking_screen.dart';
+import 'package:green_quest_frontend/screens/settings_screen.dart';
+import 'package:green_quest_frontend/screens/shop_screen.dart';
 
 // GoRouter configuration
 final GoRouter router = GoRouter(
@@ -17,19 +20,19 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/ranking',
       builder: (BuildContext context, GoRouterState state) {
-        return const HomeScreen();
+        return const Rankingscreen();
       },
     ),
     GoRoute(
       path: '/shop',
       builder: (BuildContext context, GoRouterState state) {
-        return const HomeScreen();
+        return const ShopScreen();
       },
     ),
     GoRoute(
       path: '/settings',
       builder: (BuildContext context, GoRouterState state) {
-        return const HomeScreen();
+        return const SettingsScreen();
       },
     ),
     GoRoute(
