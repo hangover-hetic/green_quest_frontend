@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:green_quest_frontend/screens/getList_api.dart';
+import 'package:green_quest_frontend/screens/feed/post_list/components/feed_post_create.dart';
+import 'package:green_quest_frontend/screens/feed/post_list/posts_list.dart';
 
-import './screens/index.dart';
+import 'package:green_quest_frontend/screens/index.dart';
 
 // GoRouter configuration
 final GoRouter router = GoRouter(
@@ -44,9 +45,25 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/list_events',
+      path: '/feed/create/:id',
+      name: 'feed_create_post',
       builder: (BuildContext context, GoRouterState state) {
-        return const GetListEvents();
+        final feedId = state.params['id'];
+        if (feedId == null) return const SizedBox();
+        return FeedPostCreateScreen(
+          feedId: int.parse(feedId),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/feed/:id',
+      name: 'feed_post_list',
+      builder: (BuildContext context, GoRouterState state) {
+        final feedId = state.params['id'];
+        if (feedId == null) return const SizedBox();
+        return FeedPostListScreen(
+          feedId: int.parse(feedId),
+        );
       },
     ),
   ],

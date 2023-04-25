@@ -15,6 +15,19 @@ To install the application, follow these steps:
 - Run `flutter pub get` to install dependencies
 - Connect your mobile device or open an emulator
 - Run `flutter run` to launch the application on your device
+
+## LINT
+
+To check lint : 
+```terminal
+dart fix --dry-run
+```
+
+To fix lint : 
+```terminal
+dart fix --apply
+```
+
 ## Screenshots
 
 
