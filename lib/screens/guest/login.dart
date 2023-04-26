@@ -1,10 +1,52 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 //import appbar.dart
 import '../../widgets/appbar.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+import 'package:http/http.dart' as http;
+
+class LoginForm extends StatefulWidget {
+  @override
+  LoginScreen createState() => LoginScreen();
+}
+
+class LoginScreen extends State<LoginForm> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  String _errorMessage = '';
+
+  Future<void> _login() async {
+    final String email = _emailController.text;
+    final String password = _passwordController.text;
+
+    // Appel à l'API pour l'authentification
+    final response = await http.post(
+      Uri.parse(
+          'https://api.greenquest.timotheedurand.fr/api/login_check'), // Remplacez cette URL par l'URL de votre API de connexion
+      body: jsonEncode({
+        'username': email,
+        'password': password,
+      }),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      print(response.body);
+      // Connexion réussie, gérer la réponse de l'API selon vos besoins
+      // par exemple, en enregistrant le token d'authentification
+      // et en naviguant vers la page suivante
+      print('Connexion réussie');
+    } else {
+      // Afficher un message d'erreur si la connexion échoue
+      setState(() {
+        print(email);
+        _errorMessage = 'Email ou mot de passe incorrect';
+        print(_errorMessage);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,16 +88,54 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 16),
+                    Padding(
+                      padding: EdgeInsets.all(0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          TextFormField(
+                            controller: _emailController,
+                            decoration: InputDecoration(
+                              labelText: 'Email',
+                              prefix: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ImageIcon(
+                                    AssetImage(
+                                        'assets/images/icons/icon_mail.png'),
+                                    // Couleur de l'icône
+                                    color: Colors.green,
+                                  ),
+                                  SizedBox(width: 8),
+                                  // Espacement entre l'icône et le texte
+                                ],
+                              ),
+                              // Ajuster la hauteur de l'icône
+                              contentPadding: EdgeInsets.fromLTRB(0, 12, 8,
+                                  12), // Ajustez les valeurs selon vos besoins
+                            ),
+                          ),
+                          TextFormField(
+                            controller: _passwordController,
+                            decoration:
+                                InputDecoration(labelText: 'Mot de passe'),
+                            obscureText: true,
+                          ),
+                          ElevatedButton(
+                            onPressed: _login,
+                            child: Text('Se connecter'),
+                          ),
+                          Text(
+                            _errorMessage,
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
-            Expanded(
-                child: Column(children: [
-              TextFormField(
-                controller: emailController,
-              )
-            ]))
           ],
         ));
   }

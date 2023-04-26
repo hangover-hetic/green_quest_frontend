@@ -42,7 +42,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/login',
       builder: (BuildContext context, GoRouterState state) {
-        return const LoginScreen();
+        return LoginForm();
       },
     ),
     GoRoute(

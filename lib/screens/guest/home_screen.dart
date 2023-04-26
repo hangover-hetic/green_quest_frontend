@@ -53,10 +53,8 @@ class HomeScreen extends StatelessWidget {
                       backgroundColor: Colors.white,
                     ),
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const LoginScreen()));
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => LoginForm()));
                     },
                     child: Text("Log in",
                         style: TextStyle(
