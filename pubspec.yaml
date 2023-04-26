@@ -39,6 +39,10 @@ dependencies:
   flutter_riverpod: ^2.3.2
   http: ^0.13.4
   flutter_dotenv: ^5.0.2
+  flutter_map: ^3.1.0
+  location: ^4.4.0
+  sliding_up_panel2: ^3.2.2
+  dropdown_button2: ^2.1.0
   fluttertoast: ^8.2.1
   transparent_image: ^2.0.1
   intl: ^0.18.1

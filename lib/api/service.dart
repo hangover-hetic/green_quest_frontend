@@ -124,7 +124,7 @@ class ApiService {
 
   static Future<List<Event>> getListEvents() async {
     try {
-      final url = Uri.parse('http://10.0.2.2:8245/api/events');
+      final url = Uri.parse("https://api.greenquest.timotheedurand.fr/api/events");
       final response = await http.get(
         url,
         headers: {'Accept': 'application/json'},
