@@ -8,6 +8,8 @@ import 'package:green_quest_frontend/screens/ranking_screen.dart';
 import 'package:green_quest_frontend/screens/settings_screen.dart';
 import 'package:green_quest_frontend/screens/shop_screen.dart';
 
+import 'package:green_quest_frontend/screens/event_details.dart';
+
 // GoRouter configuration
 final GoRouter router = GoRouter(
   routes: <RouteBase>[
@@ -45,6 +47,17 @@ final GoRouter router = GoRouter(
       path: '/api',
       builder: (BuildContext context, GoRouterState state) {
         return const ApiScreen();
+      },
+    ),
+    GoRoute(
+      path: '/events/:id',
+      name: 'event',
+      builder: (BuildContext context, GoRouterState state) {
+        final eventId = state.params['id'];
+        if (eventId == null) return const SizedBox();
+        return EventdetailsScreen(
+          eventId: int.parse(eventId),
+        );
       },
     ),
     GoRoute(

@@ -122,6 +122,15 @@ class ApiService {
     return posts;
   }
 
+  static Future<Event> getEvent(int eventId) async {
+    var event = Event.empty();
+    await ApiService.makeRequest('https://api.greenquest.timotheedurand.fr/api/events/$eventId',
+        (result) {
+      event = Event.fromJson(result as Map<String, dynamic>);
+    });
+    return event;
+  }
+
   static Future<List<Event>> getListEvents() async {
     try {
       final url = Uri.parse("https://api.greenquest.timotheedurand.fr/api/events");
