@@ -3,6 +3,7 @@ import 'dart:math' show cos, sqrt, asin;
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
+import 'package:go_router/go_router.dart';
 
 
 class EventItemSlideWidget extends StatefulWidget {
@@ -45,29 +46,34 @@ class _EventItemSlideWidgetState extends State<EventItemSlideWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          widget.event.title,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+    return InkWell(
+      onTap: () {
+        context.go('/events/${widget.event.id}');
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.event.title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
           ),
-        ),
-        SizedBox(height: 8),
-        Text(_shortDescription),
-        SizedBox(height: 8),
-        _distance != null
-            ? Text(
-          "Distance: ${_distance.toStringAsFixed(2)} km",
-          style: TextStyle(
-            fontStyle: FontStyle.italic,
-            color: Colors.grey,
-          ),
-        )
-            : SizedBox(),
-      ],
+          SizedBox(height: 8),
+          Text(_shortDescription),
+          SizedBox(height: 8),
+          _distance != null
+              ? Text(
+            "Distance: ${_distance.toStringAsFixed(2)} km",
+            style: TextStyle(
+              fontStyle: FontStyle.italic,
+              color: Colors.grey,
+            ),
+          )
+              : SizedBox(),
+        ],
+      ),
     );
   }
 }

@@ -10,6 +10,14 @@ class Event {
       }
   );
 
+  Event.empty() : this(
+      title: '',
+      description: '',
+      id: 0,
+      longitude: 0,
+      latitude: 0,
+  );
+
   factory Event.fromJson(Map<String, dynamic> json) {
     print(json);
     return Event(
