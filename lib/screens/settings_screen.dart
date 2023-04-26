@@ -20,15 +20,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: const Text('My Screen'),
         leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               context.go('/');
-            }),
+            },),
       ),
-      body: Center(
+      body: const Center(
         child: Text(
           'Settings',
-          style: const TextStyle(fontSize: 24),
+          style: TextStyle(fontSize: 24),
         ),
       ),
     );

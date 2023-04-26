@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class MenuButtonWidget extends StatefulWidget {
-  const MenuButtonWidget({Key? key}) : super(key: key);
+  const MenuButtonWidget({super.key});
 
   @override
   State<MenuButtonWidget> createState() => _MenuButtonWidgetState();
@@ -19,16 +19,16 @@ class _MenuButtonWidgetState extends State<MenuButtonWidget> {
 
             height: 55,
             width: 55,
-            child: const Icon(
-              Icons.menu,
-              size: 30,
-              color: Colors.white,
-            ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(40),
               color: const Color(0xFF0E756E),
 
 
+            ),
+            child: const Icon(
+              Icons.menu,
+              size: 30,
+              color: Colors.white,
             ),
           ),
 
@@ -45,7 +45,7 @@ class _MenuButtonWidgetState extends State<MenuButtonWidget> {
           onChanged: (value) {
             MenuItems.onChanged(context, value as MenuItem);
           },
-          dropdownStyleData: DropdownStyleData(
+          dropdownStyleData: const DropdownStyleData(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
               color: Colors.white,
@@ -58,7 +58,7 @@ class _MenuButtonWidgetState extends State<MenuButtonWidget> {
 
 
             ],
-            padding: const EdgeInsets.only(left: 14, right: 0),
+            padding: const EdgeInsets.only(left: 14),
           ),
         ),
       ),
@@ -67,13 +67,13 @@ class _MenuButtonWidgetState extends State<MenuButtonWidget> {
 }
 
 class MenuItem {
-  final String text;
-  final IconData icon;
 
   const MenuItem({
     required this.text,
     required this.icon,
   });
+  final String text;
+  final IconData icon;
 }
 
 class MenuItems {
@@ -90,7 +90,7 @@ class MenuItems {
       children: [
         Container(
           color: Colors.transparent,
-          child: Icon(item.icon, color: Color(0xFF0E756E), size: 30),
+          child: Icon(item.icon, color: const Color(0xFF0E756E), size: 30),
         ),
 
 

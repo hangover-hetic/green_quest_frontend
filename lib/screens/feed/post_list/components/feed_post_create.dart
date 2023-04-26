@@ -106,7 +106,7 @@ class FeedPostCreateScreenState extends State<FeedPostCreateScreen> {
               ),
               ElevatedButton(
                   onPressed: () => postPost(context),
-                  child: const Text('Créer'))
+                  child: const Text('Créer'),)
             ],
           ),
         ),
