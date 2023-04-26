@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:green_quest_frontend/screens/event_details.dart';
 import 'package:green_quest_frontend/screens/feed/post_list/components/feed_post_create.dart';
 import 'package:green_quest_frontend/screens/feed/post_list/posts_list.dart';
-
 import 'package:green_quest_frontend/screens/index.dart';
 import 'package:green_quest_frontend/screens/ranking_screen.dart';
 import 'package:green_quest_frontend/screens/settings_screen.dart';
 import 'package:green_quest_frontend/screens/shop_screen.dart';
-
-import 'package:green_quest_frontend/screens/event_details.dart';
 
 // GoRouter configuration
 final GoRouter router = GoRouter(

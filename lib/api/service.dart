@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -10,10 +9,10 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   static void processError(dynamic e) {
-    log(e.toString());
+    debugPrint(e.toString());
     Fluttertoast.showToast(
       msg: e.toString(),
-      toastLength: Toast.LENGTH_SHORT,
+      toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.BOTTOM,
       backgroundColor: Colors.red,
       textColor: Colors.white,
@@ -24,14 +23,22 @@ class ApiService {
   static Future<void> makeRequest(
     String url,
     void Function(dynamic) callback, [
-    Map<String, String> headers = const {},
+    Map<String, String> headers = const {'accept': 'application/json'},
   ]) async {
     try {
-      final response = await http.get(Uri.parse(url), headers: headers);
-      if (response.statusCode == 200) {
-        callback(json.decode(response.body));
-      } else {
-        throw Exception('Error');
+      final uri = Uri.parse(ApiConstants.greenQuest + url);
+      final response = await http.get(uri, headers: headers);
+      var body = json.decode(response.body);
+      debugPrint(body.toString());
+      switch (response.statusCode) {
+        case 200:
+          callback(body);
+          break;
+        case 404:
+          throw Exception('Pas trouvé');
+        default:
+          throw Exception(
+              'Error : ${response.statusCode} ${body?.details ?? ''}');
       }
     } catch (e) {
       ApiService.processError(e);
@@ -90,7 +97,7 @@ class ApiService {
       files = {'imageFile': cover};
     }
     await ApiService.makeMultipartRequest(
-        'api/feed_posts',
+        '/api/feed_posts',
         {
           'title': title,
           'content': content,
@@ -99,7 +106,7 @@ class ApiService {
         },
         files, (p0) {
       Fluttertoast.showToast(
-        msg: "Votre post a été créé avec succès",
+        msg: 'Votre post a été créé avec succès',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: Colors.green,
@@ -112,8 +119,7 @@ class ApiService {
 
   static Future<List<FeedPost>> getFeedPost(int feedId) async {
     var posts = <FeedPost>[];
-    await ApiService.makeRequest('http://localhost:8245/api/feeds/$feedId',
-        (result) {
+    await ApiService.makeRequest('api/feeds/$feedId', (result) {
       final l = result['posts'] as List<dynamic>;
       posts = List<FeedPost>.from(
         l.map((m) => FeedPost.fromJson(m as Map<String, dynamic>)),
@@ -124,34 +130,20 @@ class ApiService {
 
   static Future<Event> getEvent(int eventId) async {
     var event = Event.empty();
-    await ApiService.makeRequest('https://api.greenquest.timotheedurand.fr/api/events/$eventId',
-        (result) {
+    await ApiService.makeRequest('api/events/$eventId', (result) {
       event = Event.fromJson(result as Map<String, dynamic>);
     });
     return event;
   }
 
   static Future<List<Event>> getListEvents() async {
-    try {
-      final url = Uri.parse("https://api.greenquest.timotheedurand.fr/api/events");
-      final response = await http.get(
-        url,
-        headers: {'Accept': 'application/json'},
+    var events = <Event>[];
+    await ApiService.makeRequest('api/events', (result) {
+      final l = result as List<dynamic>;
+      events = List<Event>.from(
+        l.map((m) => Event.fromJson(m as Map<String, dynamic>)),
       );
-      print('ma response $response');
-      if (response.statusCode == 200) {
-        print(response.body);
-        final l = json.decode(response.body) as List<dynamic>;
-        final events = List<Event>.from(
-          l.map((m) => Event.fromJson(m as Map<String, dynamic>)),
-        );
-        print('mon events $events');
-        return events;
-      }
-    } catch (e) {
-      print('coucou');
-      log(e.toString());
-    }
-    return [];
+    });
+    return events;
   }
 }

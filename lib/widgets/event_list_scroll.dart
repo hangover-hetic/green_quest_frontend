@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:green_quest_frontend/widgets/event_item_slide.dart';
+import 'package:latlong2/latlong.dart';
 
 class EventListScrollWidget extends StatelessWidget {
-  final ScrollController sc;
-  final Future<List<Event>> events;
-  final LatLng currentLatLng;
 
-  const EventListScrollWidget({
-    Key? key,
+  const EventListScrollWidget({super.key, 
     required this.sc,
     required this.events,
     required this.currentLatLng,
   });
+  final ScrollController sc;
+  final Future<List<Event>> events;
+  final LatLng currentLatLng;
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +24,9 @@ class EventListScrollWidget extends StatelessWidget {
         children: <Widget>[
           Container(
               color: const Color(0xFF0E756E),
-              child: SizedBox(
-                height: 12.0,
-              )
+              child: const SizedBox(
+                height: 12,
+              ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -35,21 +34,21 @@ class EventListScrollWidget extends StatelessWidget {
           ),
           Container(
             color: const Color(0xFF0E756E),
-            child: SizedBox(
-              height: 18.0,
-            )
+            child: const SizedBox(
+              height: 18,
+            ),
           ),
 
           Container(
             color: const Color(0xFF0E756E),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              children: const <Widget>[
                 Text(
-                  "Explore Pittsburgh",
+                  'Explore Pittsburgh',
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
-                    fontSize: 24.0,
+                    fontSize: 24,
                     color: Colors.white,
                   ),
                 ),
@@ -58,12 +57,12 @@ class EventListScrollWidget extends StatelessWidget {
           ),
           Container(
               color: const Color(0xFF0E756E),
-              child: SizedBox(
-                height: 37.0,
-              )
+              child: const SizedBox(
+                height: 37,
+              ),
           ),
           Container(
-            padding: const EdgeInsets.only(left: 24.0, right: 24.0),
+            padding: const EdgeInsets.only(left: 24, right: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -74,18 +73,18 @@ class EventListScrollWidget extends StatelessWidget {
             ),
           ),
           Container(
-            padding: const EdgeInsets.only(left: 24.0, right: 24.0),
+            padding: const EdgeInsets.only(left: 24, right: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  "Events around me",
+                const Text(
+                  'Events around me',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(
-                  height: 12.0,
+                const SizedBox(
+                  height: 12,
                 ),
                 FutureBuilder<List<Event>>(
                   future: events,
@@ -111,7 +110,7 @@ class EventListScrollWidget extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 24,
           ),
         ],
