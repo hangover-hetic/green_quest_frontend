@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:green_quest_frontend/api/models/main.dart';
 import 'package:green_quest_frontend/api/service.dart';
 
-class  GetListEvents extends StatefulWidget {
+class GetListEvents extends StatefulWidget {
   const GetListEvents({super.key});
 
   @override
@@ -31,26 +31,33 @@ class GetListEventsState extends State<GetListEvents> {
           if (snapshot.hasData) {
             print(snapshot.data);
 
-          return ListView(
+            return ListView(
               children: snapshot.data!
-                  .map((events) => Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(events.title, style: const TextStyle(fontWeight: FontWeight.bold),),
-                      Text(events.description),
-                    ],
-                  ),),)
-                  .toList(),);
-        } else if (snapshot.hasError) {
-          return Text('${snapshot.error}');
-        }
+                  .map(
+                    (events) => Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            events.title,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(events.description),
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(),
+            );
+          } else if (snapshot.hasError) {
+            return Text('${snapshot.error}');
+          }
 
-        // By default, show a loading spinner.
-        return const CircularProgressIndicator();
+          // By default, show a loading spinner.
+          return const CircularProgressIndicator();
         },
-      ),);
-
+      ),
+    );
   }
 }

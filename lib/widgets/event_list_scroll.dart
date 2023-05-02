@@ -4,8 +4,8 @@ import 'package:green_quest_frontend/widgets/event_item_slide.dart';
 import 'package:latlong2/latlong.dart';
 
 class EventListScrollWidget extends StatelessWidget {
-
-  const EventListScrollWidget({super.key, 
+  const EventListScrollWidget({
+    super.key,
     required this.sc,
     required this.events,
     required this.currentLatLng,
@@ -23,14 +23,13 @@ class EventListScrollWidget extends StatelessWidget {
         controller: sc,
         children: <Widget>[
           Container(
-              color: const Color(0xFF0E756E),
-              child: const SizedBox(
-                height: 12,
-              ),
+            color: const Color(0xFF0E756E),
+            child: const SizedBox(
+              height: 12,
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-
           ),
           Container(
             color: const Color(0xFF0E756E),
@@ -38,7 +37,6 @@ class EventListScrollWidget extends StatelessWidget {
               height: 18,
             ),
           ),
-
           Container(
             color: const Color(0xFF0E756E),
             child: Row(
@@ -56,10 +54,10 @@ class EventListScrollWidget extends StatelessWidget {
             ),
           ),
           Container(
-              color: const Color(0xFF0E756E),
-              child: const SizedBox(
-                height: 37,
-              ),
+            color: const Color(0xFF0E756E),
+            child: const SizedBox(
+              height: 37,
+            ),
           ),
           Container(
             padding: const EdgeInsets.only(left: 24, right: 24),
@@ -94,10 +92,10 @@ class EventListScrollWidget extends StatelessWidget {
                         children: snapshot.data!
                             .map(
                               (event) => EventItemSlideWidget(
-                            event: event,
-                            currentPosition: currentLatLng,
-                          ),
-                        )
+                                event: event,
+                                currentPosition: currentLatLng,
+                              ),
+                            )
                             .toList(),
                       );
                     } else if (snapshot.hasError) {
