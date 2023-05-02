@@ -16,7 +16,7 @@ class ProviderScreen extends ConsumerWidget {
       ),
       body: Center(
         child: Text(
-          value ?? '',
+          value,
           style: const TextStyle(fontSize: 24),
         ),
       ),

@@ -6,7 +6,7 @@ class Post {
       {required this.title,
       required this.body,
       required this.id,
-      required this.userId});
+      required this.userId,});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(

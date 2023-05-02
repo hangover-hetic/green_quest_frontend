@@ -189,10 +189,10 @@ class _HomeScreenState extends State<HomeScreen> {
               bottom: 200,
               right: 20,
               child: FloatingActionButton(
-                onPressed: () => context.go("/create_event"),
-                child: const Icon(Icons.add),
+                onPressed: () => context.go('/create_event'),
                 backgroundColor: Colors.green,
-              )),
+                child: const Icon(Icons.add),
+              ),),
         ],
       ),
     );
