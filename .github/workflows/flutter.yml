@@ -30,3 +30,9 @@ jobs:
       - name: Analyze project source
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
+
+      - name: Build apk
+        run: flutter build apk
+
+      - name: Build appbundle
+        run: flutter build appbundle
