@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
 import 'package:green_quest_frontend/api/service.dart';
 import 'package:green_quest_frontend/widgets/Menu_button.dart';
@@ -85,9 +87,23 @@ class _HomeScreenState extends State<HomeScreen> {
     } on PlatformException catch (e) {
       debugPrint(e.toString());
       if (e.code == 'PERMISSION_DENIED') {
-        _serviceError = e.message;
+        await Fluttertoast.showToast(
+          msg: e.message ?? 'Permission denied',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16,
+        );
       } else if (e.code == 'SERVICE_STATUS_ERROR') {
-        _serviceError = e.message;
+        await Fluttertoast.showToast(
+          msg: e.message ?? 'Location service disabled',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16,
+        );
       }
       location = null;
     }
@@ -132,7 +148,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   _initFabHeight;
             }),
           ),
-
           // the fab
           Positioned(
             right: 20,
@@ -169,7 +184,15 @@ class _HomeScreenState extends State<HomeScreen> {
             left: 20,
             top: 20,
             child: MenuButtonWidget(),
-          )
+          ),
+          Positioned(
+              bottom: 200,
+              right: 20,
+              child: FloatingActionButton(
+                onPressed: () => context.go("/create_event"),
+                child: const Icon(Icons.add),
+                backgroundColor: Colors.green,
+              )),
         ],
       ),
     );

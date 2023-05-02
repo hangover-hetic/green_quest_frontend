@@ -28,7 +28,7 @@ class ApiService {
     try {
       final uri = Uri.parse(ApiConstants.greenQuest + url);
       final response = await http.get(uri, headers: headers);
-      var body = json.decode(response.body);
+      final body = json.decode(response.body);
       debugPrint(body.toString());
       switch (response.statusCode) {
         case 200:
@@ -38,7 +38,7 @@ class ApiService {
           throw Exception('Pas trouvé');
         default:
           throw Exception(
-              'Error : ${response.statusCode} ${body?.details ?? ''}');
+              'Error : ${response.statusCode} ${body?.details ?? ''}',);
       }
     } catch (e) {
       ApiService.processError(e);
