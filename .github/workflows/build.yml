@@ -1,9 +1,11 @@
 name: Build and Publish Release
 
-on:
-  push:
-    branches:
-      - main
+dispatch:
+  inputs:
+    version:
+      description: 'Version of the release'
+      required: true
+      default: '1.0.0'
 
 jobs:
   build_and_publish:
