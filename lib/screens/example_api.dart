@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:green_quest_frontend/api/service.dart';
-
-import '../api/models/main.dart';
-import '../providers/index.dart';
+import 'package:green_quest_frontend/api/models/main.dart';
 
 class ApiScreen extends StatefulWidget {
   const ApiScreen({super.key});
@@ -18,7 +14,6 @@ class ApiScreenState extends State<ApiScreen> {
   @override
   void initState() {
     super.initState();
-    posts = ApiService.getTestUsers();
   }
 
   @override
@@ -34,17 +29,24 @@ class ApiScreenState extends State<ApiScreen> {
             print(snapshot.data);
 
             return ListView(
-                children: snapshot.data!
-                    .map((post) => Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                       Text(post.title, style: TextStyle(fontWeight: FontWeight.bold),),
-                        Text(post.body),
-                      ],
-                    )))
-                    .toList());
+              children: snapshot.data!
+                  .map(
+                    (post) => Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            post.title,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(post.body),
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(),
+            );
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
           }
@@ -52,6 +54,7 @@ class ApiScreenState extends State<ApiScreen> {
           // By default, show a loading spinner.
           return const CircularProgressIndicator();
         },
-      ));
+      ),
+    );
   }
 }

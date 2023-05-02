@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../api/models/main.dart';
 import 'package:green_quest_frontend/api/eventsService.dart';
+import 'package:green_quest_frontend/api/models/main.dart';
 
 final _formKey = GlobalKey<FormState>();
 
 class CreateEvent extends StatefulWidget {
-  const CreateEvent({Key? key}) : super(key: key);
+  const CreateEvent({super.key});
 
   @override
   CreateEventState createState() => CreateEventState();
@@ -39,10 +39,11 @@ class CreateEventState extends State<CreateEvent> {
     await EventsServiceApi.postEvent(data);
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Center(
             child: Form(
               key: _formKey,
@@ -55,7 +56,7 @@ class CreateEventState extends State<CreateEvent> {
                     controller: _titleTEC,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Enter Something";
+                        return 'Enter Something';
                       }
                       return null;
                     },
@@ -67,7 +68,7 @@ class CreateEventState extends State<CreateEvent> {
                     controller: _descriptionTEC,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Enter Something";
+                        return 'Enter Something';
                       }
                       return null;
                     },
@@ -79,7 +80,7 @@ class CreateEventState extends State<CreateEvent> {
                     controller: _latitudeTEC,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Enter Something";
+                        return 'Enter Something';
                       }
                       return null;
                     },
@@ -91,7 +92,7 @@ class CreateEventState extends State<CreateEvent> {
                     controller: _longitudeTEC,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Enter Something";
+                        return 'Enter Something';
                       }
                       return null;
                     },
@@ -105,12 +106,12 @@ class CreateEventState extends State<CreateEvent> {
                           ),
                         );
 
-                        final _title       = _titleTEC.text;
-                        final _description = _descriptionTEC.text;
-                        final _latitude    = double.parse(_latitudeTEC.text);
-                        final _longitude   = double.parse(_longitudeTEC.text);
+                        final title       = _titleTEC.text;
+                        final description = _descriptionTEC.text;
+                        final latitude    = double.parse(_latitudeTEC.text);
+                        final longitude   = double.parse(_longitudeTEC.text);
 
-                        postEvent(_title, _description, _latitude, _longitude);
+                        postEvent(title, description, latitude, longitude);
                       }
                     },
                     child: const Text('Validate'),
