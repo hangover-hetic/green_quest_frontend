@@ -2,11 +2,12 @@ List<Post> postTestFromJson(List<Map<String, dynamic>> json) =>
     List<Post>.from(json.map(Post.fromJson));
 
 class Post {
-  Post(
-      {required this.title,
-      required this.body,
-      required this.id,
-      required this.userId,});
+  Post({
+    required this.title,
+    required this.body,
+    required this.id,
+    required this.userId,
+  });
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
