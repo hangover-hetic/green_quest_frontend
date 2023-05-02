@@ -1,19 +1,14 @@
 name: Build and Publish Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version of the release'
-        required: true
-        default: '1.0.0'
-
+  push:
+      branches:
+        - master
+  
+  
 jobs:
   build_and_publish:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged && github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-latest
-    env:
-      VERSION: ${{ github.event.inputs.message }} 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -32,8 +27,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v$VERSION
-          release_name: Release $VERSION # Change this to the release name you want to use
+          tag_name: ${{ github.event.head_commit.message }}
+          release_name: Release ${{ github.event.head_commit.message }} # Change this to the release name you want to use
           draft: false
           prerelease: false
 
