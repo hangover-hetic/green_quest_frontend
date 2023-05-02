@@ -1,4 +1,4 @@
-import '../utils.dart';
+import 'package:green_quest_frontend/api/utils.dart';
 
 class Event {
   Event({
@@ -42,7 +42,6 @@ class Event {
     return {
       'title': title,
       'description': description,
-      'id': id,
       'longitude': longitude,
       'latitude': latitude
     };
