@@ -38,7 +38,8 @@ class ApiService {
           throw Exception('Pas trouvé');
         default:
           throw Exception(
-              'Error : ${response.statusCode} ${body?.details ?? ''}',);
+            'Error : ${response.statusCode} ${body?.details ?? ''}',
+          );
       }
     } catch (e) {
       ApiService.processError(e);

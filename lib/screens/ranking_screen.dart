@@ -20,10 +20,11 @@ class _RankingscreenState extends State<Rankingscreen> {
       appBar: AppBar(
         title: const Text('My Screen'),
         leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              context.go('/');
-            },),
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.go('/');
+          },
+        ),
       ),
       body: const Center(
         child: Text(

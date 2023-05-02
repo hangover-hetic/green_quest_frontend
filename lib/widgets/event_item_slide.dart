@@ -3,9 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
 import 'package:latlong2/latlong.dart';
 
-
 class EventItemSlideWidget extends StatefulWidget {
-
   const EventItemSlideWidget({
     super.key,
     required this.event,
@@ -61,13 +59,16 @@ class _EventItemSlideWidgetState extends State<EventItemSlideWidget> {
           const SizedBox(height: 8),
           Text(_shortDescription),
           const SizedBox(height: 8),
-          if (_distance != null) Text(
-            'Distance: ${_distance.toStringAsFixed(2)} km',
-            style: const TextStyle(
-              fontStyle: FontStyle.italic,
-              color: Colors.grey,
-            ),
-          ) else const SizedBox(),
+          if (_distance != null)
+            Text(
+              'Distance: ${_distance.toStringAsFixed(2)} km',
+              style: const TextStyle(
+                fontStyle: FontStyle.italic,
+                color: Colors.grey,
+              ),
+            )
+          else
+            const SizedBox(),
         ],
       ),
     );

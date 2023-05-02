@@ -95,10 +95,11 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                 ),
               ),
               ElevatedButton(
-                  onPressed: () {
-                    context.go('/feed/${event.feedId}');
-                  },
-                  child: const Text('Go to feed'),),
+                onPressed: () {
+                  context.go('/feed/${event.feedId}');
+                },
+                child: const Text('Go to feed'),
+              ),
             ],
           );
         },

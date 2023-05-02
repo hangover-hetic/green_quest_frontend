@@ -16,14 +16,11 @@ class _MenuButtonWidgetState extends State<MenuButtonWidget> {
       child: DropdownButtonHideUnderline(
         child: DropdownButton2(
           customButton: Container(
-
             height: 55,
             width: 55,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(40),
               color: const Color(0xFF0E756E),
-
-
             ),
             child: const Icon(
               Icons.menu,
@@ -31,7 +28,6 @@ class _MenuButtonWidgetState extends State<MenuButtonWidget> {
               color: Colors.white,
             ),
           ),
-
           items: [
             ...MenuItems.firstItems.map(
               (item) => DropdownMenuItem<MenuItem>(
@@ -39,8 +35,6 @@ class _MenuButtonWidgetState extends State<MenuButtonWidget> {
                 child: MenuItems.buildItem(item),
               ),
             ),
-
-
           ],
           onChanged: (value) {
             MenuItems.onChanged(context, value as MenuItem);
@@ -51,12 +45,9 @@ class _MenuButtonWidgetState extends State<MenuButtonWidget> {
               color: Colors.white,
             ),
           ),
-
           menuItemStyleData: MenuItemStyleData(
             customHeights: [
               ...List<double>.filled(MenuItems.firstItems.length, 48),
-
-
             ],
             padding: const EdgeInsets.only(left: 14),
           ),
@@ -67,7 +58,6 @@ class _MenuButtonWidgetState extends State<MenuButtonWidget> {
 }
 
 class MenuItem {
-
   const MenuItem({
     required this.text,
     required this.icon,
@@ -79,11 +69,9 @@ class MenuItem {
 class MenuItems {
   static const List<MenuItem> firstItems = [ranking, shop, settings];
 
-
   static const ranking = MenuItem(text: '', icon: Icons.spa_outlined);
   static const shop = MenuItem(text: '', icon: Icons.shopping_cart_outlined);
   static const settings = MenuItem(text: '', icon: Icons.settings_outlined);
-
 
   static Widget buildItem(MenuItem item) {
     return Row(
@@ -92,8 +80,6 @@ class MenuItems {
           color: Colors.transparent,
           child: Icon(item.icon, color: const Color(0xFF0E756E), size: 30),
         ),
-
-
       ],
     );
   }
