@@ -1,17 +1,19 @@
 name: Build and Publish Release
 
-dispatch:
-  inputs:
-    version:
-      description: 'Version of the release'
-      required: true
-      default: '1.0.0'
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version of the release'
+        required: true
+        default: '1.0.0'
 
 jobs:
   build_and_publish:
     if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged && github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-latest
-
+    env:
+      VERSION: ${{ github.event.inputs.message }} 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -19,7 +21,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v1
         with:
-          flutter-version: '2.5.3' # Change this to the version of Flutter you want to use
+          flutter-version: '3.7.12' # Change this to the version of Flutter you want to use
 
       - name: Build APK
         run: flutter build apk --release
@@ -30,8 +32,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v1.0.0 # Change this to the tag name you want to use for the release
-          release_name: Release 1.0.0 # Change this to the release name you want to use
+          tag_name: v$VERSION
+          release_name: Release $VERSION # Change this to the release name you want to use
           draft: false
           prerelease: false
 
