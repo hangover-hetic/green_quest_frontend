@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,6 +15,7 @@ jobs:
         with:
           flutter-version: '3.7.12'
           channel: 'stable'
+          cache: true
 
       - run: flutter --version
 
