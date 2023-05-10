@@ -71,14 +71,17 @@ class ApiService {
 
       request.fields.addAll(body);
       request.headers.addAll(headers);
+      request.headers.addAll({'Accept': 'application/json'});
 
       final response = await request.send();
+      print(response.statusCode);
 
+      final respStr = await response.stream.bytesToString();
+      final jsonResp = json.decode(respStr);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final respStr = await response.stream.bytesToString();
-        callback(json.decode(respStr));
+        callback(jsonResp);
       } else {
-        throw Exception('Error');
+        throw Exception(respStr);
       }
     } catch (e) {
       ApiService.processError(e);
@@ -98,7 +101,7 @@ class ApiService {
       files = {'imageFile': cover};
     }
     await ApiService.makeMultipartRequest(
-        '/api/feed_posts',
+        'api/feed_posts',
         {
           'title': title,
           'content': content,

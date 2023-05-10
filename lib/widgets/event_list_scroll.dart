@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
+import 'package:green_quest_frontend/style/colors.dart';
 import 'package:green_quest_frontend/widgets/event_item_slide.dart';
 import 'package:latlong2/latlong.dart';
 
 class EventListScrollWidget extends StatelessWidget {
   const EventListScrollWidget({
-    required this.sc,
+    super.key,
     required this.events,
     required this.currentLatLng,
-    super.key,
+    required this.canScroll,
+    required this.scrollController,
   });
-  final ScrollController sc;
+
   final Future<List<Event>> events;
   final LatLng currentLatLng;
+  final bool canScroll;
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -20,26 +24,29 @@ class EventListScrollWidget extends StatelessWidget {
       context: context,
       removeTop: true,
       child: ListView(
-        controller: sc,
+        controller: scrollController,
+        physics: canScroll
+            ? const AlwaysScrollableScrollPhysics()
+            : const NeverScrollableScrollPhysics(),
         children: <Widget>[
-          Container(
-            color: const Color(0xFF0E756E),
-            child: const SizedBox(
+          const ColoredBox(
+            color: green,
+            child: SizedBox(
               height: 12,
             ),
           ),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
           ),
-          Container(
-            color: const Color(0xFF0E756E),
-            child: const SizedBox(
+          const ColoredBox(
+            color: green,
+            child: SizedBox(
               height: 18,
             ),
           ),
-          Container(
-            color: const Color(0xFF0E756E),
-            child: const Row(
+          ColoredBox(
+            color: green,
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
@@ -53,15 +60,15 @@ class EventListScrollWidget extends StatelessWidget {
               ],
             ),
           ),
-          Container(
-            color: const Color(0xFF0E756E),
-            child: const SizedBox(
+          const ColoredBox(
+            color: green,
+            child: SizedBox(
               height: 37,
             ),
           ),
           Container(
             padding: const EdgeInsets.only(left: 24, right: 24),
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Row(

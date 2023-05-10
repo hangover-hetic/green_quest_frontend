@@ -3,6 +3,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
 import 'package:green_quest_frontend/api/service.dart';
+import 'package:green_quest_frontend/style/colors.dart';
+import 'package:green_quest_frontend/widgets/gq_button.dart';
+import 'package:green_quest_frontend/widgets/loading_view.dart';
 import 'package:latlong2/latlong.dart';
 
 class EventdetailsScreen extends StatefulWidget {
@@ -25,27 +28,37 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Screen'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            context.go('/');
-          },
-        ),
-      ),
-      body: FutureBuilder<Event>(
-        future: event,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Text('${snapshot.error}');
-          }
-          final event = snapshot.data!;
-          return Column(
+    return FutureBuilder<Event>(
+      future: event,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const LoadingViewWidget();
+        }
+        if (snapshot.hasError) {
+          return Text('${snapshot.error}');
+        }
+        final event = snapshot.data!;
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(event.title),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                context.go('/');
+              },
+            ),
+            backgroundColor: green,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.rss_feed),
+                onPressed: () {
+                  context
+                      .push('/feed/${event.id}/${event.feedId}/${event.title}');
+                },
+              ),
+            ],
+          ),
+          body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
@@ -85,46 +98,26 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                           width: 80,
                           height: 80,
                           point: LatLng(event.latitude, event.longitude),
-                          builder: (ctx) => Container(
-                            child: const Icon(Icons.location_pin),
-                          ),
+                          builder: (ctx) => const Icon(Icons.location_pin),
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  context.go('/feed/${event.feedId}');
-                },
-                child: const Text('Go to feed'),
-              ),
             ],
-          );
-        },
-      ),
-      floatingActionButton: SizedBox(
-        width: 140,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF0E756E),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-            ),
-            child: const Text(
-              'Sign Up',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+          ),
+          floatingActionButton: SizedBox(
+            width: 140,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: GqButton(text: 'Sign In', onPressed: () {}),
             ),
           ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+        );
+      },
     );
   }
 }

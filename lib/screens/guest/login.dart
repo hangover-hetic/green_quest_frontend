@@ -1,11 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:green_quest_frontend/screens/map_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:green_quest_frontend/style/colors.dart';
+
 //import appbar.dart
 import 'package:green_quest_frontend/widgets/appbar.dart';
+import 'package:green_quest_frontend/widgets/gq_button.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../map_screen.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -43,10 +48,12 @@ class LoginScreen extends State<LoginForm> {
 
       _valid = 'Connexion réussie';
 
-      await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const MapScreen()),
-      );
+      if (context.mounted) {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MapScreen()),
+        );
+      }
       //mettre le token en storage
     } else {
       // Afficher un message d'erreur si la connexion échoue
@@ -60,8 +67,6 @@ class LoginScreen extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
       appBar: const CustomAppBar(
         key: Key('loginAppBar'),
@@ -104,38 +109,24 @@ class LoginScreen extends State<LoginForm> {
                           controller: _emailController,
                           decoration: const InputDecoration(
                             labelText: 'Email',
-                            prefix: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ImageIcon(
-                                  AssetImage(
-                                    'assets/images/icons/icon_mail.png',
-                                  ),
-                                  // Couleur de l'icône
-                                  color: Colors.green,
-                                ),
-                                SizedBox(width: 8),
-                                // Espacement entre l'icône et le texte
-                              ],
-                            ),
-                            // Ajuster la hauteur de l'icône
-                            contentPadding: EdgeInsets.fromLTRB(
-                              0,
-                              12,
-                              8,
-                              12,
-                            ), // Ajustez les valeurs selon vos besoins
+                            prefixIcon:
+                                Icon(Icons.email_outlined, color: green),
                           ),
                         ),
                         TextFormField(
                           controller: _passwordController,
-                          decoration:
-                              const InputDecoration(labelText: 'Mot de passe'),
+                          decoration: const InputDecoration(
+                              labelText: 'Mot de passe',
+                              prefixIcon: Icon(
+                                Icons.lock_outline,
+                                color: green,
+                              )),
                           obscureText: true,
                         ),
-                        ElevatedButton(
+                        const SizedBox(height: 16),
+                        GqButton(
                           onPressed: _login,
-                          child: const Text('Se connecter'),
+                          text: 'Se connecter',
                         ),
                         Text(
                           _errorMessage == '' ? _valid : _errorMessage,

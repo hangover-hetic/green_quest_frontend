@@ -5,8 +5,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
 import 'package:green_quest_frontend/api/service.dart';
+import 'package:green_quest_frontend/style/colors.dart';
 import 'package:green_quest_frontend/widgets/Menu_button.dart';
 import 'package:green_quest_frontend/widgets/event_list_scroll.dart';
+import 'package:green_quest_frontend/widgets/loading_view.dart';
 import 'package:green_quest_frontend/widgets/map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
@@ -29,6 +31,7 @@ class _MapScreenState extends State<MapScreen> {
   double _fabHeight = 0;
   double _panelHeightOpen = 0;
   final double _panelHeightClosed = 95;
+  bool _isPanelOpen = false;
 
   late Future<List<Event>> events = Future.value([]);
 
@@ -111,11 +114,11 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _panelHeightOpen = MediaQuery.of(context).size.height * .80;
+    _panelHeightOpen = MediaQuery.of(context).size.height * .90;
     LatLng currentLatLng;
 
     if (_currentLocation == null) {
-      return const CircularProgressIndicator();
+      return const LoadingViewWidget();
     }
     currentLatLng =
         LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!);
@@ -124,18 +127,30 @@ class _MapScreenState extends State<MapScreen> {
       child: Stack(
         alignment: Alignment.topCenter,
         children: <Widget>[
+          Positioned(
+            bottom: 200,
+            right: 20,
+            child: FloatingActionButton(
+              onPressed: () => context.go('/create_event'),
+              backgroundColor: green,
+              child: const Icon(Icons.add),
+            ),
+          ),
           SlidingUpPanel(
             maxHeight: _panelHeightOpen,
             minHeight: _panelHeightClosed,
             parallaxEnabled: true,
             parallaxOffset: .5,
+            backdropEnabled: true,
+            isDraggable: !_isPanelOpen,
             body: MapWithEventMarkers(
               currentLatLng: currentLatLng,
               events: events,
               mapController: _mapController,
             ),
             panelBuilder: () => EventListScrollWidget(
-              sc: ScrollController(),
+              scrollController: ScrollController(),
+              canScroll: _isPanelOpen,
               events: events,
               currentLatLng: currentLatLng,
             ),
@@ -147,13 +162,19 @@ class _MapScreenState extends State<MapScreen> {
               _fabHeight = pos * (_panelHeightOpen - _panelHeightClosed) +
                   _initFabHeight;
             }),
+            onPanelOpened: () => setState(() {
+              _isPanelOpen = true;
+            }),
+            onPanelClosed: () => setState(() {
+              _isPanelOpen = false;
+            }),
           ),
           // the fab
           Positioned(
             right: 20,
             bottom: _fabHeight,
             child: FloatingActionButton(
-              backgroundColor: const Color(0xFF0E756E),
+              backgroundColor: green,
               onPressed: () {
                 setState(() {
                   _liveUpdate = !_liveUpdate;
@@ -182,17 +203,8 @@ class _MapScreenState extends State<MapScreen> {
           ),
           const Positioned(
             left: 20,
-            top: 20,
+            top: 40,
             child: MenuButtonWidget(),
-          ),
-          Positioned(
-            bottom: 200,
-            right: 20,
-            child: FloatingActionButton(
-              onPressed: () => context.go('/create_event'),
-              backgroundColor: Colors.green,
-              child: const Icon(Icons.add),
-            ),
           ),
         ],
       ),

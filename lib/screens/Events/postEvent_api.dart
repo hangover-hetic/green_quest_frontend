@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:green_quest_frontend/api/eventsService.dart';
+import 'package:green_quest_frontend/api/events_service.dart';
 import 'package:green_quest_frontend/api/models/main.dart';
 
 final _formKey = GlobalKey<FormState>();
