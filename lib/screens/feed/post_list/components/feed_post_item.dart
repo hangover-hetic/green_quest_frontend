@@ -3,12 +3,8 @@ import 'package:transparent_image/transparent_image.dart';
 
 class FeedPostWidget extends StatelessWidget {
   const FeedPostWidget({
-    super.key,
-    required this.title,
-    required this.content,
+    required this.title, required this.content, required this.authorName, required this.createdAt, super.key,
     this.coverUrl,
-    required this.authorName,
-    required this.createdAt,
   });
 
   final String title;

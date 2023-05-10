@@ -6,7 +6,7 @@ import 'package:green_quest_frontend/api/service.dart';
 import 'package:latlong2/latlong.dart';
 
 class EventdetailsScreen extends StatefulWidget {
-  const EventdetailsScreen({super.key, required this.eventId});
+  const EventdetailsScreen({required this.eventId, super.key});
 
   final int eventId;
 

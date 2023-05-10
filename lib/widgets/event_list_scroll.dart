@@ -5,10 +5,7 @@ import 'package:latlong2/latlong.dart';
 
 class EventListScrollWidget extends StatelessWidget {
   const EventListScrollWidget({
-    super.key,
-    required this.sc,
-    required this.events,
-    required this.currentLatLng,
+    required this.sc, required this.events, required this.currentLatLng, super.key,
   });
   final ScrollController sc;
   final Future<List<Event>> events;
@@ -28,7 +25,7 @@ class EventListScrollWidget extends StatelessWidget {
               height: 12,
             ),
           ),
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.center,
           ),
           Container(
@@ -39,9 +36,9 @@ class EventListScrollWidget extends StatelessWidget {
           ),
           Container(
             color: const Color(0xFF0E756E),
-            child: Row(
+            child: const Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const <Widget>[
+              children: <Widget>[
                 Text(
                   'Explore Pittsburgh',
                   style: TextStyle(
@@ -61,7 +58,7 @@ class EventListScrollWidget extends StatelessWidget {
           ),
           Container(
             padding: const EdgeInsets.only(left: 24, right: 24),
-            child: Column(
+            child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Row(

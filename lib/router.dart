@@ -4,13 +4,12 @@ import 'package:green_quest_frontend/screens/Events/postEvent_api.dart';
 import 'package:green_quest_frontend/screens/event_details.dart';
 import 'package:green_quest_frontend/screens/feed/post_list/components/feed_post_create.dart';
 import 'package:green_quest_frontend/screens/feed/post_list/posts_list.dart';
+import 'package:green_quest_frontend/screens/guest/home.dart';
+import 'package:green_quest_frontend/screens/guest/login.dart';
+import 'package:green_quest_frontend/screens/map_screen.dart';
 import 'package:green_quest_frontend/screens/ranking_screen.dart';
 import 'package:green_quest_frontend/screens/settings_screen.dart';
 import 'package:green_quest_frontend/screens/shop_screen.dart';
-
-import 'screens/guest/login.dart';
-import 'screens/guest/home.dart';
-import 'screens/map_screen.dart';
 
 // GoRouter configuration
 final GoRouter router = GoRouter(
@@ -48,7 +47,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/login',
       builder: (BuildContext context, GoRouterState state) {
-        return LoginForm();
+        return const LoginForm();
       },
     ),
     GoRoute(

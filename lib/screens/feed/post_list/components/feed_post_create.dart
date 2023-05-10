@@ -7,7 +7,7 @@ import 'package:green_quest_frontend/api/service.dart';
 import 'package:image_picker/image_picker.dart';
 
 class FeedPostCreateScreen extends StatefulWidget {
-  const FeedPostCreateScreen({super.key, required this.feedId});
+  const FeedPostCreateScreen({required this.feedId, super.key});
 
   final int feedId;
 

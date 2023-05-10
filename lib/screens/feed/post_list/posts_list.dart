@@ -7,7 +7,7 @@ import 'package:green_quest_frontend/screens/feed/post_list/components/feed_post
 import 'package:intl/intl.dart';
 
 class FeedPostListScreen extends StatefulWidget {
-  const FeedPostListScreen({super.key, required this.feedId});
+  const FeedPostListScreen({required this.feedId, super.key});
 
   final int feedId;
 

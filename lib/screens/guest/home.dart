@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'login.dart';
+import 'package:green_quest_frontend/screens/guest/login.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -12,10 +11,10 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          Container(
+          SizedBox(
             height: screenHeight / 2, // Hauteur égale à la moitié de l'écran
             child: Image.asset(
-              "assets/images/background_login.jpg",
+              'assets/images/background_login.jpg',
               fit: BoxFit.cover,
               height: double
                   .infinity, // Hauteur maximale pour remplir tout le container
@@ -23,50 +22,49 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 1,
             child: Container(
-              color: Color(0xff0E756E), // Ajout de la couleur d'arrière-plan
-              padding: EdgeInsets.all(32),
+              color: const Color(0xff0E756E), // Ajout de la couleur d'arrière-plan
+              padding: const EdgeInsets.all(32),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    "Let’s change together",
+                  const Text(
+                    'Let’s change together',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 16),
-                  Text(
-                    "Are you ready to change the world, one street at a time? Sign up for our volunteer cleanup events app !",
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Are you ready to change the world, one street at a time? Sign up for our volunteer cleanup events app !',
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                     ),
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => LoginForm()));
+                          MaterialPageRoute(builder: (context) => const LoginForm()),);
                     },
-                    child: Text("Log in",
+                    child: const Text('Log in',
                         style: TextStyle(
                           color: Color(0xff0C6863),
-                        )),
+                        ),),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xff0C6863),
+                      backgroundColor: const Color(0xff0C6863),
                       // create border
-                      side: BorderSide(
+                      side: const BorderSide(
                         color: Colors.white,
                         width: 2,
                       ),
@@ -74,10 +72,10 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () {
                       // Action du bouton
                     },
-                    child: Text("Sign up",
+                    child: const Text('Sign up',
                         style: TextStyle(
                           color: Colors.white,
-                        )),
+                        ),),
                   ),
                 ],
               ),
