@@ -2,10 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //import appbar.dart
 import '../../widgets/appbar.dart';
 
 import 'package:http/http.dart' as http;
+
+import 'home.dart';
 
 class LoginForm extends StatefulWidget {
   @override
@@ -16,6 +19,7 @@ class LoginScreen extends State<LoginForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String _errorMessage = '';
+  String _valid = '';
 
   Future<void> _login() async {
     final String email = _emailController.text;
@@ -33,11 +37,14 @@ class LoginScreen extends State<LoginForm> {
     );
 
     if (response.statusCode == 200) {
-      print(response.body);
-      // Connexion réussie, gérer la réponse de l'API selon vos besoins
-      // par exemple, en enregistrant le token d'authentification
-      // et en naviguant vers la page suivante
-      print('Connexion réussie');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', jsonDecode(response.body)['token']);
+
+      _valid = 'Connexion réussie';
+
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      //mettre le token en storage
     } else {
       // Afficher un message d'erreur si la connexion échoue
       setState(() {
@@ -126,8 +133,13 @@ class LoginScreen extends State<LoginForm> {
                             child: Text('Se connecter'),
                           ),
                           Text(
-                            _errorMessage,
-                            style: TextStyle(color: Colors.red),
+                            _errorMessage == '' ? _valid : _errorMessage,
+                            //faire un terner pour afficher en rouge si erreur et en vert si valid
+                            style: TextStyle(
+                              color: _errorMessage == ''
+                                  ? Colors.green
+                                  : Colors.red,
+                            ),
                           ),
                         ],
                       ),

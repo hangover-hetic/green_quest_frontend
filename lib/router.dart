@@ -10,7 +10,7 @@ import 'package:green_quest_frontend/screens/settings_screen.dart';
 import 'package:green_quest_frontend/screens/shop_screen.dart';
 
 import 'screens/guest/login.dart';
-import 'screens/guest/home_screen.dart';
+import 'screens/guest/home.dart';
 
 // GoRouter configuration
 final GoRouter router = GoRouter(
