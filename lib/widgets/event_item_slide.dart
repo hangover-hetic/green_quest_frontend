@@ -9,6 +9,7 @@ class EventItemSlideWidget extends StatefulWidget {
     required this.currentPosition,
     super.key,
   });
+
   final Event event;
   final LatLng currentPosition;
 
@@ -42,34 +43,38 @@ class _EventItemSlideWidgetState extends State<EventItemSlideWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return InkWell(
       onTap: () {
-        context.go('/events/${widget.event.id}');
+        context.push('/events/${widget.event.id}');
       },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            widget.event.title,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(_shortDescription),
-          const SizedBox(height: 8),
-          if (_distance != null)
+      child: SizedBox(
+        width: width,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Text(
-              'Distance: ${_distance.toStringAsFixed(2)} km',
+              widget.event.title,
               style: const TextStyle(
-                fontStyle: FontStyle.italic,
-                color: Colors.grey,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
               ),
-            )
-          else
-            const SizedBox(),
-        ],
+            ),
+            const SizedBox(height: 8),
+            Text(_shortDescription),
+            const SizedBox(height: 8),
+            if (_distance != null)
+              Text(
+                'Distance: ${_distance.toStringAsFixed(2)} km',
+                style: const TextStyle(
+                  fontStyle: FontStyle.italic,
+                  color: Colors.grey,
+                ),
+              )
+            else
+              const SizedBox(),
+          ],
+        ),
       ),
     );
   }

@@ -12,45 +12,45 @@ class MenuButtonWidget extends StatefulWidget {
 class _MenuButtonWidgetState extends State<MenuButtonWidget> {
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton2(
-          customButton: Container(
-            height: 55,
-            width: 55,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(40),
-              color: const Color(0xFF0E756E),
-            ),
-            child: const Icon(
-              Icons.menu,
-              size: 30,
-              color: Colors.white,
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2(
+        customButton: Container(
+          height: 55,
+          width: 55,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(40),
+            color: const Color(0xFF0E756E),
+          ),
+          child: const Icon(
+            Icons.menu,
+            size: 30,
+            color: Colors.white,
+          ),
+        ),
+        items: [
+          ...MenuItems.firstItems.map(
+            (item) => DropdownMenuItem<MenuItem>(
+              value: item,
+              child: MenuItems.buildItem(item),
             ),
           ),
-          items: [
-            ...MenuItems.firstItems.map(
-              (item) => DropdownMenuItem<MenuItem>(
-                value: item,
-                child: MenuItems.buildItem(item),
-              ),
-            ),
+        ],
+        onChanged: (value) {
+          MenuItems.onChanged(context, value as MenuItem);
+        },
+        dropdownStyleData: const DropdownStyleData(
+          elevation: 2,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
+            color: Colors.white,
+          ),
+        ),
+        buttonStyleData: const ButtonStyleData(elevation: 8),
+        menuItemStyleData: MenuItemStyleData(
+          customHeights: [
+            ...List<double>.filled(MenuItems.firstItems.length, 48),
           ],
-          onChanged: (value) {
-            MenuItems.onChanged(context, value as MenuItem);
-          },
-          dropdownStyleData: const DropdownStyleData(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
-              color: Colors.white,
-            ),
-          ),
-          menuItemStyleData: MenuItemStyleData(
-            customHeights: [
-              ...List<double>.filled(MenuItems.firstItems.length, 48),
-            ],
-            padding: const EdgeInsets.only(left: 14),
-          ),
+          padding: const EdgeInsets.only(left: 14),
         ),
       ),
     );
@@ -62,6 +62,7 @@ class MenuItem {
     required this.text,
     required this.icon,
   });
+
   final String text;
   final IconData icon;
 }
@@ -76,7 +77,7 @@ class MenuItems {
   static Widget buildItem(MenuItem item) {
     return Row(
       children: [
-        Container(
+        ColoredBox(
           color: Colors.transparent,
           child: Icon(item.icon, color: const Color(0xFF0E756E), size: 30),
         ),
@@ -84,7 +85,7 @@ class MenuItems {
     );
   }
 
-  static onChanged(BuildContext context, MenuItem item) {
+  static void onChanged(BuildContext context, MenuItem item) {
     switch (item) {
       case MenuItems.ranking:
         context.go('/ranking');

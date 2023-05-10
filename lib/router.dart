@@ -21,7 +21,7 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/mapscreen',
+      path: '/map',
       builder: (BuildContext context, GoRouterState state) {
         return const MapScreen();
       },
@@ -62,24 +62,31 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/feed/create/:id',
+      path: '/feed/:eventId/:feedId/create',
       name: 'feed_create_post',
       builder: (BuildContext context, GoRouterState state) {
-        final feedId = state.params['id'];
-        if (feedId == null) return const SizedBox();
+        final feedId = state.params['feedId'];
+        final eventId = state.params['eventId'];
+        if (feedId == null || eventId == null) return const SizedBox();
         return FeedPostCreateScreen(
           feedId: int.parse(feedId),
+          eventId: int.parse(eventId),
         );
       },
     ),
     GoRoute(
-      path: '/feed/:id',
+      path: '/feed/:eventId/:feedId/:eventName',
       name: 'feed_post_list',
       builder: (BuildContext context, GoRouterState state) {
-        final feedId = state.params['id'];
-        if (feedId == null) return const SizedBox();
+        final feedId = state.params['feedId'];
+        final eventId = state.params['eventId'];
+        final eventName = state.params['eventName'];
+        if (feedId == null || eventId == null || eventName == null)
+          return const SizedBox();
         return FeedPostListScreen(
           feedId: int.parse(feedId),
+          eventId: int.parse(eventId),
+          eventName: eventName,
         );
       },
     ),
