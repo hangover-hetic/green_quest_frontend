@@ -23,7 +23,8 @@ class HomeScreen extends StatelessWidget {
           ),
           Expanded(
             child: Container(
-              color: const Color(0xff0E756E), // Ajout de la couleur d'arrière-plan
+              color:
+                  const Color(0xff0E756E), // Ajout de la couleur d'arrière-plan
               padding: const EdgeInsets.all(32),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -51,13 +52,18 @@ class HomeScreen extends StatelessWidget {
                       backgroundColor: Colors.white,
                     ),
                     onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => const LoginForm()),);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginForm()),
+                      );
                     },
-                    child: const Text('Log in',
-                        style: TextStyle(
-                          color: Color(0xff0C6863),
-                        ),),
+                    child: const Text(
+                      'Log in',
+                      style: TextStyle(
+                        color: Color(0xff0C6863),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 8),
                   ElevatedButton(
@@ -72,10 +78,12 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () {
                       // Action du bouton
                     },
-                    child: const Text('Sign up',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),),
+                    child: const Text(
+                      'Sign up',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ],
               ),

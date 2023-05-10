@@ -5,7 +5,10 @@ import 'package:latlong2/latlong.dart';
 
 class EventListScrollWidget extends StatelessWidget {
   const EventListScrollWidget({
-    required this.sc, required this.events, required this.currentLatLng, super.key,
+    required this.sc,
+    required this.events,
+    required this.currentLatLng,
+    super.key,
   });
   final ScrollController sc;
   final Future<List<Event>> events;
