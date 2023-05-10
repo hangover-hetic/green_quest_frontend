@@ -5,10 +5,10 @@ import 'package:latlong2/latlong.dart';
 
 class MapWithEventMarkers extends StatelessWidget {
   const MapWithEventMarkers({
-    super.key,
     required this.mapController,
     required this.currentLatLng,
     required this.events,
+    super.key,
   });
   final MapController mapController;
   final LatLng currentLatLng;

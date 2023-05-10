@@ -12,14 +12,14 @@ import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class MapScreen extends StatefulWidget {
+  const MapScreen({super.key});
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _MapScreenState createState() => _MapScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _MapScreenState extends State<MapScreen> {
   LocationData? _currentLocation;
   late final MapController _mapController;
   bool _liveUpdate = false;

@@ -5,9 +5,9 @@ import 'package:latlong2/latlong.dart';
 
 class EventItemSlideWidget extends StatefulWidget {
   const EventItemSlideWidget({
-    super.key,
     required this.event,
     required this.currentPosition,
+    super.key,
   });
   final Event event;
   final LatLng currentPosition;

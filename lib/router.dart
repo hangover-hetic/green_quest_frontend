@@ -4,7 +4,9 @@ import 'package:green_quest_frontend/screens/Events/postEvent_api.dart';
 import 'package:green_quest_frontend/screens/event_details.dart';
 import 'package:green_quest_frontend/screens/feed/post_list/components/feed_post_create.dart';
 import 'package:green_quest_frontend/screens/feed/post_list/posts_list.dart';
-import 'package:green_quest_frontend/screens/index.dart';
+import 'package:green_quest_frontend/screens/guest/home.dart';
+import 'package:green_quest_frontend/screens/guest/login.dart';
+import 'package:green_quest_frontend/screens/map_screen.dart';
 import 'package:green_quest_frontend/screens/ranking_screen.dart';
 import 'package:green_quest_frontend/screens/settings_screen.dart';
 import 'package:green_quest_frontend/screens/shop_screen.dart';
@@ -16,6 +18,12 @@ final GoRouter router = GoRouter(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
         return const HomeScreen();
+      },
+    ),
+    GoRoute(
+      path: '/mapscreen',
+      builder: (BuildContext context, GoRouterState state) {
+        return const MapScreen();
       },
     ),
     GoRoute(
@@ -37,15 +45,9 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/provider',
+      path: '/login',
       builder: (BuildContext context, GoRouterState state) {
-        return const ProviderScreen();
-      },
-    ),
-    GoRoute(
-      path: '/api',
-      builder: (BuildContext context, GoRouterState state) {
-        return const ApiScreen();
+        return const LoginForm();
       },
     ),
     GoRoute(
