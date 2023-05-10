@@ -2,13 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:green_quest_frontend/screens/map_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import appbar.dart
 import '../../widgets/appbar.dart';
 
 import 'package:http/http.dart' as http;
-
-import 'home.dart';
 
 class LoginForm extends StatefulWidget {
   @override
@@ -43,7 +42,7 @@ class LoginScreen extends State<LoginForm> {
       _valid = 'Connexion réussie';
 
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+          context, MaterialPageRoute(builder: (context) => MapScreen()));
       //mettre le token en storage
     } else {
       // Afficher un message d'erreur si la connexion échoue
