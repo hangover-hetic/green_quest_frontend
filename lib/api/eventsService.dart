@@ -42,4 +42,19 @@ class EventsServiceApi {
     }
     return [];
   }
+
+  static Future<List<Event>> updateEvent(data) async {
+    try {
+      final url =
+          Uri.parse('https://api.greenquest.timotheedurand.fr/api/events{id}');
+      final response = await http.patch(
+        url,
+        headers: {'Content-type': 'application/json'},
+        body: jsonEncode(data),
+      );
+    } catch(e) {
+      log(e.toString());
+    }
+    return[];
+  }
 }

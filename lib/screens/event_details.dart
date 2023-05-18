@@ -1,9 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
 import 'package:green_quest_frontend/api/service.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:green_quest_frontend/api/eventsService.dart';
+
+final _formKey = GlobalKey<FormState>();
 
 class EventdetailsScreen extends StatefulWidget {
   const EventdetailsScreen({super.key, required this.eventId});
@@ -17,10 +22,32 @@ class EventdetailsScreen extends StatefulWidget {
 class _EventdetailsScreenState extends State<EventdetailsScreen> {
   late Future<Event> event;
 
+
   @override
   void initState() {
     super.initState();
     event = ApiService.getEvent(widget.eventId);
+  }
+
+  final TextEditingController _titleTEC = TextEditingController();
+  final TextEditingController _descriptionTEC = TextEditingController();
+  final TextEditingController _latitudeTEC = TextEditingController();
+  final TextEditingController _longitudeTEC = TextEditingController();
+
+  Future<void> updateEvent(
+      String title,
+      String description,
+      double latitude,
+      double longitude,
+      ) async {
+    final data = {
+      'title': title,
+      'description': description,
+      'longitude': longitude,
+      'latitude': latitude
+    };
+
+    await EventsServiceApi.updateEvent(data);
   }
 
   @override
@@ -102,6 +129,7 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
               ),
             ],
           );
+          )
         },
       ),
       floatingActionButton: SizedBox(
