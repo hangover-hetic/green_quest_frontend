@@ -224,7 +224,7 @@ class ApiService {
       'api/participations',
       {
         'event': '/api/events/$eventId',
-        'user': '/api/users/$userId',
+        'userId': '/api/users/$userId',
       },
       (p0) {
         Fluttertoast.showToast(
@@ -241,12 +241,11 @@ class ApiService {
   }
 
   static Future<void> deleteParticipation({
-    required String eventId,
-    required String userId,
+    required String participationId,
     required Function callback,
   }) async {
     await ApiService.makeDeleteRequest(
-      'api/participations?event=/api/events/$eventId&userId=/api/users/$userId',
+      'api/participations/$participationId',
       (p0) {
         Fluttertoast.showToast(
           msg: 'Vous êtes désinscrit de l\'évènement',

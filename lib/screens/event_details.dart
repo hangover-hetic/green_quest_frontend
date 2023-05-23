@@ -14,7 +14,6 @@ class EventdetailsScreen extends StatefulWidget {
 
   final int eventId;
 
-
   @override
   _EventdetailsScreenState createState() => _EventdetailsScreenState();
 }
@@ -23,6 +22,8 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
   late Future<Event> event;
 
   late Future<bool> isParticipating;
+  int participationId = 0;
+  List<String> participantsIds = [];
   int currentUserId = 30;
 
   @override
@@ -32,30 +33,46 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
     isParticipating = GetParticipationStatus(event);
   }
 
-  Future<bool> GetParticipationStatus(Future<Event> event) async {
+  Future<bool> GetParticipationStatus(Future<Event> event) async{
     Event eventEntity = await event;
+    participantsIds = eventEntity.participants
+        .map((e) => extractIdFromUrl((e['userId'] ?? '') as String))
+        .toList();
     if (eventEntity.participants.isEmpty) {
       return false;
     }
     for (final participation in eventEntity.participants) {
-      if (participation == currentUserId) {
+      if (extractIdFromUrl((participation['userId'] ?? '') as String) ==
+          currentUserId.toString()) {
+        participationId = participation['id'] as int;
         return true;
       }
     }
     return false;
-
   }
 
   Future<void> ChangeParticipationStatus(Event event, int currentUser) async {
     if (!(await isParticipating)) {
-      ApiService.createParticipation(eventId: event.id.toString(), userId: currentUser.toString(), callback: () {});
+      await ApiService.createParticipation(
+          eventId: event.id.toString(),
+          userId: currentUser.toString(),
+          callback: () {
+            setState(() {
+              isParticipating = Future.value(true);
+              participantsIds.add(currentUser.toString());
+            });
+          });
     } else {
-      ApiService.deleteParticipation(eventId: event.id.toString(), userId: currentUser.toString(), callback: () {});
+      await ApiService.deleteParticipation(
+          participationId: participationId.toString(),
+          callback: () {
+            setState(() {
+              isParticipating = Future.value(false);
+              participantsIds.remove(currentUser.toString());
+            });
+          });
     }
-
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +159,27 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                 },
                 child: const Text('Go to feed'),
               ),
-              Text('Participants: ${event.participants}'),
+              Text('Participants: ${participantsIds}'),
+              ElevatedButton(
+                onPressed: () async {
+                  ChangeParticipationStatus(await event, currentUserId as int);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0E756E),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text(
+                  isParticipating == null
+                      ? 'Loading...'
+                      : isParticipating == Future.value(true)
+                          ? 'Leave'
+                          : 'Join',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                ),
+              ),
             ],
           );
         },
