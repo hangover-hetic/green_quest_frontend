@@ -46,6 +46,66 @@ class ApiService {
     }
   }
 
+  static Future<void> makePostRequest(
+      String url,
+      Map<String, String> body,
+      void Function(dynamic) callback, [
+        Map<String, String> headers = const {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      ]) async {
+    try {
+      final uri = Uri.parse(ApiConstants.greenQuest + url);
+      final response = await http.post(uri, headers: headers, body: json.encode(body));
+
+      final bodyResp = json.decode(response.body);
+
+      switch (response.statusCode) {
+        case 200:
+
+          break;
+        case 404:
+          throw Exception('Pas trouvé');
+        default:
+          throw Exception(
+            'Error : ${response.reasonPhrase}',
+          );
+      }
+    } catch (e) {
+      ApiService.processError(e);
+    }
+  }
+
+  static Future<void> makeDeleteRequest(
+    String url,
+    void Function(dynamic) callback, [
+    Map<String, String> headers = const {'accept': 'application/json'},
+  ]) async {
+    try {
+      final uri = Uri.parse(ApiConstants.greenQuest + url);
+      final response = await http.delete(
+        uri,
+        headers: headers,
+      );
+      final bodyResponse = json.decode(response.body);
+
+      switch (response.statusCode) {
+        case 200:
+
+          break;
+        case 404:
+          throw Exception('Pas trouvé');
+        default:
+          throw Exception(
+            'Error : ${response.statusCode} ${bodyResponse?.details ?? ''}',
+          );
+      }
+    } catch (e) {
+      ApiService.processError(e);
+    }
+  }
+
   static Future<void> makeMultipartRequest(
     String url,
     Map<String, String> body,
@@ -56,17 +116,18 @@ class ApiService {
     try {
       final uri = Uri.parse(ApiConstants.greenQuest + url);
       final request = http.MultipartRequest('POST', uri);
-
-      for (final file in files.entries) {
-        final stream = http.ByteStream(file.value.openRead());
-        final length = await file.value.length();
-        final multipartFile = http.MultipartFile(
-          'coverFile',
-          stream,
-          length,
-          filename: file.value.path.split('/').last,
-        );
-        request.files.add(multipartFile);
+      if (files.isNotEmpty) {
+        for (final file in files.entries) {
+          final stream = http.ByteStream(file.value.openRead());
+          final length = await file.value.length();
+          final multipartFile = http.MultipartFile(
+            'coverFile',
+            stream,
+            length,
+            filename: file.value.path.split('/').last,
+          );
+          request.files.add(multipartFile);
+        }
       }
 
       request.fields.addAll(body);
@@ -81,7 +142,9 @@ class ApiService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         callback(jsonResp);
       } else {
-        throw Exception(respStr);
+        throw Exception(
+          'Error : ${response.statusCode} ${response.reasonPhrase}',
+        );
       }
     } catch (e) {
       ApiService.processError(e);
@@ -149,5 +212,51 @@ class ApiService {
       );
     });
     return events;
+  }
+
+  static Future<void> createParticipation({
+    required String eventId,
+    required String userId,
+    required Function callback,
+    File? cover,
+  }) async {
+    await ApiService.makePostRequest(
+      'api/participations',
+      {
+        'event': '/api/events/$eventId',
+        'userId': '/api/users/$userId',
+      },
+      (p0) {
+        Fluttertoast.showToast(
+          msg: 'Vous êtes inscrit à l\'évènement',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16,
+        );
+        callback();
+      },
+    );
+  }
+
+  static Future<void> deleteParticipation({
+    required String participationId,
+    required Function callback,
+  }) async {
+    await ApiService.makeDeleteRequest(
+      'api/participations/$participationId',
+      (p0) {
+        Fluttertoast.showToast(
+          msg: 'Vous êtes désinscrit de l\'évènement',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16,
+        );
+        callback();
+      },
+    );
   }
 }

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
+import 'package:green_quest_frontend/api/models/user.dart';
 import 'package:green_quest_frontend/api/service.dart';
+import 'package:green_quest_frontend/api/utils.dart';
 import 'package:green_quest_frontend/style/colors.dart';
 import 'package:green_quest_frontend/widgets/gq_button.dart';
 import 'package:green_quest_frontend/widgets/loading_view.dart';
@@ -20,10 +22,57 @@ class EventdetailsScreen extends StatefulWidget {
 class _EventdetailsScreenState extends State<EventdetailsScreen> {
   late Future<Event> event;
 
+  late Future<bool> isParticipating;
+  int participationId = 0;
+  List<dynamic> participantsIds = [];
+  int currentUserId = 30;
+
   @override
   void initState() {
     super.initState();
     event = ApiService.getEvent(widget.eventId);
+    isParticipating = GetParticipationStatus(event);
+  }
+
+  Future<bool> GetParticipationStatus(Future<Event> event) async{
+    Event eventEntity = await event;
+    participantsIds = eventEntity.participants
+        .map((e) => extractIdFromUrl((e['userId'] ?? '') as String))
+        .toList();
+    if (eventEntity.participants.isEmpty) {
+      return false;
+    }
+    for (final participation in eventEntity.participants) {
+      if (extractIdFromUrl((participation['userId'] ?? '') as String) ==
+          currentUserId.toString()) {
+        participationId = participation['id'] as int;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Future<void> ChangeParticipationStatus(Event event, int currentUser) async {
+    if (!(await isParticipating)) {
+      await ApiService.createParticipation(
+          eventId: event.id.toString(),
+          userId: currentUser.toString(),
+          callback: () {
+            setState(() {
+              isParticipating = Future.value(true);
+              participantsIds.add(currentUser.toString());
+            });
+          });
+    } else {
+      await ApiService.deleteParticipation(
+          participationId: participationId.toString(),
+          callback: () {
+            setState(() {
+              isParticipating = Future.value(false);
+              participantsIds.remove(currentUser.toString());
+            });
+          });
+    }
   }
 
   @override
@@ -105,17 +154,51 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                   ],
                 ),
               ),
+              ElevatedButton(
+                onPressed: () {
+                  context.go('/feed/${event.feedId}');
+                },
+                child: const Text('Go to feed'),
+              ),
+              Text('Participants: ${participantsIds}'),
+              ElevatedButton(
+                onPressed: () async {
+                  await ChangeParticipationStatus(event, currentUserId);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0E756E),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: FutureBuilder<bool>(
+                  future: isParticipating,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Text(
+                        'Loading...',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      );
+                    }
+                    if (snapshot.hasData) {
+                      return Text(
+                        snapshot.data! ? 'Leave' : 'Join',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
+              ),
             ],
           ),
-          floatingActionButton: SizedBox(
-            width: 140,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: GqButton(text: 'Sign In', onPressed: () {}),
-            ),
-          ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
         );
       },
     );

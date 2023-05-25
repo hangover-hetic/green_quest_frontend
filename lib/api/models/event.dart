@@ -8,6 +8,7 @@ class Event {
     required this.longitude,
     required this.latitude,
     required this.feedId,
+    required this.participants,
   });
 
   Event.empty()
@@ -17,7 +18,8 @@ class Event {
           id: 0,
           longitude: 0,
           latitude: 0,
-          feedId: '',
+          feedId: 0,
+          participants: [],
         );
 
   factory Event.fromJson(Map<String, dynamic> json) {
@@ -25,9 +27,10 @@ class Event {
       title: (json['title'] ?? '') as String,
       description: (json['description'] ?? '') as String,
       id: json['id'] as int,
-      longitude: json['longitude'] as double,
-      latitude: json['latitude'] as double,
-      feedId: extractIdFromUrl((json['feed'] ?? '') as String),
+      longitude: double.parse((json['longitude'] ?? 0).toString()),
+      latitude: double.parse((json['latitude'] ?? 0).toString()),
+      feedId: json['feed'] as int,
+      participants: json['participantIds'] as List<dynamic>,
     );
   }
 
@@ -36,7 +39,8 @@ class Event {
   final int id;
   final double longitude;
   final double latitude;
-  final String feedId;
+  final int feedId;
+  final List<dynamic> participants;
 
   Map<String, dynamic> toJson() {
     return {
