@@ -17,7 +17,6 @@ class RegisterForm extends StatefulWidget {
 class RegisterScreen extends State<RegisterForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _rolesController = TextEditingController();
   final TextEditingController _firstnameController = TextEditingController();
   final TextEditingController _lastnameController = TextEditingController();
   String _errorMessage = '';
