@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
 import 'package:green_quest_frontend/api/models/user.dart';
 import 'package:green_quest_frontend/api/service.dart';
+import 'package:green_quest_frontend/api/utils.dart';
 import 'package:green_quest_frontend/style/colors.dart';
 import 'package:green_quest_frontend/widgets/gq_button.dart';
 import 'package:green_quest_frontend/widgets/loading_view.dart';
@@ -23,7 +24,7 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
 
   late Future<bool> isParticipating;
   int participationId = 0;
-  List<String> participantsIds = [];
+  List<dynamic> participantsIds = [];
   int currentUserId = 30;
 
   @override
@@ -162,7 +163,7 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
               Text('Participants: ${participantsIds}'),
               ElevatedButton(
                 onPressed: () async {
-                  ChangeParticipationStatus(await event, currentUserId as int);
+                  await ChangeParticipationStatus(event, currentUserId);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0E756E),
@@ -171,37 +172,33 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: Text(
-                  isParticipating == null
-                      ? 'Loading...'
-                      : isParticipating == Future.value(true)
-                          ? 'Leave'
-                          : 'Join',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                child: FutureBuilder<bool>(
+                  future: isParticipating,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Text(
+                        'Loading...',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      );
+                    }
+                    if (snapshot.hasData) {
+                      return Text(
+                        snapshot.data! ? 'Leave' : 'Join',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      );
+                    }
+                    return const SizedBox();
+                  },
                 ),
               ),
             ],
-          );
-        },
-      ),
-      floatingActionButton: SizedBox(
-        width: 140,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: ElevatedButton(
-            onPressed: () async {
-              ChangeParticipationStatus(await event, currentUserId as int);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF0E756E),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-            ),
           ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
         );
       },
     );

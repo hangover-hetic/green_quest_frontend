@@ -60,10 +60,10 @@ class ApiService {
       final response = await http.post(uri, headers: headers, body: json.encode(body));
 
       final bodyResp = json.decode(response.body);
-      debugPrint(body.toString());
+
       switch (response.statusCode) {
         case 200:
-          callback(body);
+
           break;
         case 404:
           throw Exception('Pas trouvé');
@@ -89,10 +89,10 @@ class ApiService {
         headers: headers,
       );
       final bodyResponse = json.decode(response.body);
-      debugPrint(bodyResponse.toString());
+
       switch (response.statusCode) {
         case 200:
-          callback(bodyResponse);
+
           break;
         case 404:
           throw Exception('Pas trouvé');
