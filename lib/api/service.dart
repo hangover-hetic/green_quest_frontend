@@ -8,6 +8,8 @@ import 'package:green_quest_frontend/api/api_constants.dart';
 import 'package:green_quest_frontend/api/models/main.dart';
 import 'package:http/http.dart' as http;
 
+import '../screens/guest/login.dart';
+
 class ApiService {
   static void processError(dynamic e) {
     debugPrint(e.toString());
@@ -241,12 +243,14 @@ class ApiService {
   }
 
   static Future<void> RegisterUser({
+    required BuildContext context,
     required String email,
     required String password,
     required String firstname,
     required String lastname,
     required int exp,
     required int blobs,
+    required Function callback,
     File? cover,
     required String userIdentifier,
   }) async {
@@ -260,9 +264,16 @@ class ApiService {
         'lastname': lastname,
         'exp': 0,
         'blobs': 0,
-        'userIdentifier': 'adrien@gmail.com'
+        'userIdentifier': email
       },
       (p0) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginForm(),
+          ),
+        );
+
         Fluttertoast.showToast(
           msg: 'Votre inscription a été effectuée avec succès',
           toastLength: Toast.LENGTH_SHORT,
@@ -271,6 +282,7 @@ class ApiService {
           textColor: Colors.white,
           fontSize: 16,
         );
+        callback();
       },
     );
     print('salut');

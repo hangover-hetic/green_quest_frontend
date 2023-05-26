@@ -31,6 +31,7 @@ class RegisterScreen extends State<RegisterForm> {
     final lastname = _lastnameController.text;
 
     await ApiService.RegisterUser(
+      context: context,
       email: email,
       password: password,
       firstname: firstname,
@@ -38,6 +39,14 @@ class RegisterScreen extends State<RegisterForm> {
       exp: 0,
       blobs: 0,
       userIdentifier: email,
+      callback: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginForm(),
+          ),
+        );
+      },
     );
   }
 

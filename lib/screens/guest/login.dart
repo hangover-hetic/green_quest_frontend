@@ -48,6 +48,22 @@ class LoginScreen extends State<LoginForm> {
 
       _valid = 'Connexion réussie';
 
+      final userInfo = await http.get(
+        Uri.parse(
+          'https://api.greenquest.timotheedurand.fr/api/me',
+        ), // Remplacez cette URL par l'URL de votre API de connexion
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${prefs.getString('token')}'
+        },
+      );
+
+      if (userInfo.statusCode == 200) {
+        await prefs.setString('user', userInfo.body);
+        print('oui');
+        print(prefs.getString('user'));
+      }
+
       if (context.mounted) {
         await Navigator.push(
           context,
