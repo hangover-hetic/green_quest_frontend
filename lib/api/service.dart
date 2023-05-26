@@ -58,10 +58,8 @@ class ApiService {
   ]) async {
     try {
       final uri = Uri.parse(ApiConstants.greenQuest + url);
-      print(uri);
       final response =
           await http.post(uri, headers: headers, body: json.encode(body));
-
       final bodyResp = json.decode(response.body);
 
       switch (response.statusCode) {
@@ -72,7 +70,7 @@ class ApiService {
           throw Exception('Pas trouvé');
         default:
           throw Exception(
-            'Error : ${response.reasonPhrase}',
+            'Error : ${response.statusCode} ${response.toString() ?? ''}',
           );
       }
     } catch (e) {
@@ -252,13 +250,14 @@ class ApiService {
     File? cover,
     required String userIdentifier,
   }) async {
+    print("coucou");
     await ApiService.makePostRequest(
       'api/users',
       {
-        'email': 'ab@gmail.com',
-        'password': 'password',
-        'firstname': 'adrien',
-        'lastname': 'bouteiller',
+        'email': email,
+        'password': password,
+        'firstname': firstname,
+        'lastname': lastname,
         'exp': 0,
         'blobs': 0,
         'userIdentifier': 'adrien@gmail.com'
@@ -274,6 +273,7 @@ class ApiService {
         );
       },
     );
+    print('salut');
   }
 
   static Future<void> deleteParticipation({

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:green_quest_frontend/api/service.dart';
 import 'package:green_quest_frontend/screens/guest/login.dart';
+
 //import appbar.dart
 import 'package:green_quest_frontend/widgets/appbar.dart';
 import 'package:http/http.dart' as http;
@@ -106,9 +107,7 @@ class RegisterScreen extends State<RegisterForm> {
                           obscureText: true,
                         ),
                         ElevatedButton(
-                          onPressed: () async {
-                            await _register();
-                          },
+                          onPressed: _register,
                           child: const Text('Se connecter'),
                         ),
                         Text(
