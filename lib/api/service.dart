@@ -66,13 +66,14 @@ class ApiService {
 
       switch (response.statusCode) {
         case 200:
+        case 201:
           callback(bodyResp);
           break;
         case 404:
           throw Exception('Pas trouvé');
         default:
           throw Exception(
-            'Error : ${response.statusCode} ${response.toString() ?? ''}',
+            'Error : ${response.statusCode} ${bodyResp.toString() ?? ''}',
           );
       }
     } catch (e) {
@@ -254,7 +255,6 @@ class ApiService {
     File? cover,
     required String userIdentifier,
   }) async {
-    print("coucou");
     await ApiService.makePostRequest(
       'api/users',
       {
@@ -285,7 +285,6 @@ class ApiService {
         callback();
       },
     );
-    print('salut');
   }
 
   static Future<void> deleteParticipation({
