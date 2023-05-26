@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:green_quest_frontend/api/api_constants.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
@@ -18,17 +19,9 @@ class EventsServiceApi {
     return events;
   }
 
-  static Future<List<Event>> postEvent(data) async {
-    try {
-      final url = Uri.parse(ApiConstants.greenQuest);
-      await http.post(
-        url,
-        headers: {'Content-type': 'application/json'},
-        body: jsonEncode(data),
-      );
-    } catch (e) {
-      log(e.toString());
-    }
-    return [];
+  static Future<void> postEvent(Map<String, String> data, File coverFile,
+      void Function(dynamic) callback) async {
+    await ApiService.makeMultipartRequest(
+        'api/events', data, {'coverFile': coverFile}, callback);
   }
 }

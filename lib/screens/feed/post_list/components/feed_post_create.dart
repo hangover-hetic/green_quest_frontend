@@ -9,6 +9,7 @@ import 'package:green_quest_frontend/widgets/gq_button.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../widgets/gq_page_scaffold.dart';
+import '../../../../widgets/img_picker.dart';
 
 class FeedPostCreateScreen extends StatefulWidget {
   const FeedPostCreateScreen({
@@ -35,19 +36,6 @@ class FeedPostCreateScreenState extends State<FeedPostCreateScreen> {
     super.initState();
   }
 
-  Future<void> pickImage() async {
-    final picker = ImagePicker();
-    final image = await picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      final imagePath = image?.path;
-      if (imagePath == null) {
-        log('No file selected');
-        return;
-      }
-      cover = File(imagePath);
-    });
-  }
-
   Future<void> postPost(BuildContext context) async {
     await ApiService.createPost(
       title: title,
@@ -66,19 +54,14 @@ class FeedPostCreateScreenState extends State<FeedPostCreateScreen> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final coverFile = cover;
-    Widget coverWidget = GestureDetector(
-      onTap: pickImage,
-      child: Container(
-        decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-        height: 200,
-        width: width,
-        child: const Center(
-          child: Text(
-            'Cliquer pour ajouter une image',
-            style: TextStyle(fontSize: 20),
-          ),
-        ),
-      ),
+    Widget coverWidget = ImgPicker(
+      width: width,
+      text: 'Cliquer pour ajouter une image',
+      onSelected: (imagePath) {
+        setState(() {
+          cover = File(imagePath);
+        });
+      },
     );
     if (coverFile != null) {
       coverWidget = Image.file(

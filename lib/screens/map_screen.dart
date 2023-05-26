@@ -127,15 +127,6 @@ class _MapScreenState extends State<MapScreen> {
       child: Stack(
         alignment: Alignment.topCenter,
         children: <Widget>[
-          Positioned(
-            bottom: 200,
-            right: 20,
-            child: FloatingActionButton(
-              onPressed: () => context.go('/create_event'),
-              backgroundColor: green,
-              child: const Icon(Icons.add),
-            ),
-          ),
           SlidingUpPanel(
             maxHeight: _panelHeightOpen,
             minHeight: _panelHeightClosed,
@@ -171,36 +162,43 @@ class _MapScreenState extends State<MapScreen> {
           ),
           // the fab
           Positioned(
-            right: 20,
-            bottom: _fabHeight,
-            child: FloatingActionButton(
-              backgroundColor: green,
-              onPressed: () {
-                setState(() {
-                  _liveUpdate = !_liveUpdate;
+              right: 20,
+              bottom: _fabHeight,
+              child: Column(children: [
+                FloatingActionButton(
+                  onPressed: () => context.go('/create_event'),
+                  backgroundColor: green,
+                  child: const Icon(Icons.add),
+                ),
+                const SizedBox(height: 10),
+                FloatingActionButton(
+                  backgroundColor: green,
+                  onPressed: () {
+                    setState(() {
+                      _liveUpdate = !_liveUpdate;
 
-                  if (_liveUpdate) {
-                    interActiveFlags = InteractiveFlag.rotate |
-                        InteractiveFlag.pinchZoom |
-                        InteractiveFlag.doubleTapZoom;
+                      if (_liveUpdate) {
+                        interActiveFlags = InteractiveFlag.rotate |
+                            InteractiveFlag.pinchZoom |
+                            InteractiveFlag.doubleTapZoom;
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'In live update mode only zoom and rotation are enable',
-                        ),
-                      ),
-                    );
-                  } else {
-                    interActiveFlags = InteractiveFlag.all;
-                  }
-                });
-              },
-              child: _liveUpdate
-                  ? const Icon(Icons.gps_fixed)
-                  : const Icon(Icons.gps_not_fixed),
-            ),
-          ),
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'In live update mode only zoom and rotation are enable',
+                            ),
+                          ),
+                        );
+                      } else {
+                        interActiveFlags = InteractiveFlag.all;
+                      }
+                    });
+                  },
+                  child: _liveUpdate
+                      ? const Icon(Icons.gps_fixed)
+                      : const Icon(Icons.gps_not_fixed),
+                ),
+              ])),
           const Positioned(
             left: 20,
             top: 40,
