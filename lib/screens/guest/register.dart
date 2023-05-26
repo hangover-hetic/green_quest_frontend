@@ -1,88 +1,59 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:green_quest_frontend/style/colors.dart';
+import 'package:green_quest_frontend/api/service.dart';
+import 'package:green_quest_frontend/screens/guest/login.dart';
 
 //import appbar.dart
 import 'package:green_quest_frontend/widgets/appbar.dart';
-import 'package:green_quest_frontend/widgets/gq_button.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../map_screen.dart';
-
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+class RegisterForm extends StatefulWidget {
+  const RegisterForm({super.key});
 
   @override
-  LoginScreen createState() => LoginScreen();
+  RegisterScreen createState() => RegisterScreen();
 }
 
-class LoginScreen extends State<LoginForm> {
+class RegisterScreen extends State<RegisterForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _firstnameController = TextEditingController();
+  final TextEditingController _lastnameController = TextEditingController();
   String _errorMessage = '';
   String _valid = '';
 
-  Future<void> _login() async {
+  Future<void> _register() async {
     final email = _emailController.text;
     final password = _passwordController.text;
+    final firstname = _firstnameController.text;
+    final lastname = _lastnameController.text;
 
-    // Appel à l'API pour l'authentification
-    final response = await http.post(
-      Uri.parse(
-        'https://api.greenquest.timotheedurand.fr/api/login_check',
-      ), // Remplacez cette URL par l'URL de votre API de connexion
-      body: jsonEncode({
-        'username': email,
-        'password': password,
-      }),
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    if (response.statusCode == 200) {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(
-          'token', jsonDecode(response.body)['token'] as String);
-
-      _valid = 'Connexion réussie';
-
-      final userInfo = await http.get(
-        Uri.parse(
-          'https://api.greenquest.timotheedurand.fr/api/me',
-        ), // Remplacez cette URL par l'URL de votre API de connexion
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${prefs.getString('token')}'
-        },
-      );
-
-      if (userInfo.statusCode == 200) {
-        await prefs.setString('user', userInfo.body);
-        print('oui');
-        print(prefs.getString('user'));
-      }
-
-      if (context.mounted) {
-        await Navigator.push(
+    await ApiService.RegisterUser(
+      context: context,
+      email: email,
+      password: password,
+      firstname: firstname,
+      lastname: lastname,
+      exp: 0,
+      blobs: 0,
+      userIdentifier: email,
+      callback: () {
+        Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const MapScreen()),
+          MaterialPageRoute(
+            builder: (context) => LoginForm(),
+          ),
         );
-      }
-      //mettre le token en storage
-    } else {
-      // Afficher un message d'erreur si la connexion échoue
-      setState(() {
-        print(email);
-        _errorMessage = 'Email ou mot de passe incorrect';
-        print(_errorMessage);
-      });
-    }
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: const CustomAppBar(
         key: Key('loginAppBar'),
@@ -122,27 +93,31 @@ class LoginScreen extends State<LoginForm> {
                     child: Column(
                       children: [
                         TextFormField(
+                          controller: _firstnameController,
+                          decoration:
+                              const InputDecoration(labelText: 'Prénom'),
+                        ),
+                        TextFormField(
+                          controller: _lastnameController,
+                          decoration: const InputDecoration(labelText: 'Nom'),
+                        ),
+                        TextFormField(
                           controller: _emailController,
                           decoration: const InputDecoration(
                             labelText: 'Email',
                             prefixIcon:
-                                Icon(Icons.email_outlined, color: green),
+                                Icon(Icons.email_outlined, color: Colors.green),
                           ),
                         ),
                         TextFormField(
                           controller: _passwordController,
-                          decoration: const InputDecoration(
-                              labelText: 'Mot de passe',
-                              prefixIcon: Icon(
-                                Icons.lock_outline,
-                                color: green,
-                              )),
+                          decoration:
+                              const InputDecoration(labelText: 'Mot de passe'),
                           obscureText: true,
                         ),
-                        const SizedBox(height: 16),
-                        GqButton(
-                          onPressed: _login,
-                          text: 'Se connecter',
+                        ElevatedButton(
+                          onPressed: _register,
+                          child: const Text('Se connecter'),
                         ),
                         Text(
                           _errorMessage == '' ? _valid : _errorMessage,

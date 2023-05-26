@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,6 +7,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:green_quest_frontend/api/api_constants.dart';
 import 'package:green_quest_frontend/api/models/main.dart';
 import 'package:http/http.dart' as http;
+
+import '../screens/guest/login.dart';
 
 class ApiService {
   static void processError(dynamic e) {
@@ -47,29 +50,29 @@ class ApiService {
   }
 
   static Future<void> makePostRequest(
-      String url,
-      Map<String, String> body,
-      void Function(dynamic) callback, [
-        Map<String, String> headers = const {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      ]) async {
+    String url,
+    Map<String, dynamic> body,
+    void Function(dynamic) callback, [
+    Map<String, String> headers = const {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+  ]) async {
     try {
       final uri = Uri.parse(ApiConstants.greenQuest + url);
-      final response = await http.post(uri, headers: headers, body: json.encode(body));
-
+      final response =
+          await http.post(uri, headers: headers, body: json.encode(body));
       final bodyResp = json.decode(response.body);
 
       switch (response.statusCode) {
         case 200:
-
+          callback(bodyResp);
           break;
         case 404:
           throw Exception('Pas trouvé');
         default:
           throw Exception(
-            'Error : ${response.reasonPhrase}',
+            'Error : ${response.statusCode} ${response.toString() ?? ''}',
           );
       }
     } catch (e) {
@@ -92,7 +95,6 @@ class ApiService {
 
       switch (response.statusCode) {
         case 200:
-
           break;
         case 404:
           throw Exception('Pas trouvé');
@@ -238,6 +240,52 @@ class ApiService {
         callback();
       },
     );
+  }
+
+  static Future<void> RegisterUser({
+    required BuildContext context,
+    required String email,
+    required String password,
+    required String firstname,
+    required String lastname,
+    required int exp,
+    required int blobs,
+    required Function callback,
+    File? cover,
+    required String userIdentifier,
+  }) async {
+    print("coucou");
+    await ApiService.makePostRequest(
+      'api/users',
+      {
+        'email': email,
+        'password': password,
+        'firstname': firstname,
+        'lastname': lastname,
+        'exp': 0,
+        'blobs': 0,
+        'userIdentifier': email
+      },
+      (p0) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginForm(),
+          ),
+        );
+
+        Fluttertoast.showToast(
+          msg: 'Votre inscription a été effectuée avec succès',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16,
+        );
+        callback();
+      },
+    );
+    print('salut');
   }
 
   static Future<void> deleteParticipation({
