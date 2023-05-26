@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:green_quest_frontend/screens/Events/edit_event.dart';
 import 'package:green_quest_frontend/screens/Events/postEvent_api.dart';
+import 'package:green_quest_frontend/screens/Events/edit_event.dart';
 import 'package:green_quest_frontend/screens/event_details.dart';
 import 'package:green_quest_frontend/screens/feed/post_list/components/feed_post_create.dart';
 import 'package:green_quest_frontend/screens/feed/post_list/posts_list.dart';
@@ -58,6 +60,19 @@ final GoRouter router = GoRouter(
         if (eventId == null) return const SizedBox();
         return EventdetailsScreen(
           eventId: int.parse(eventId),
+        );
+      },
+    ),
+    GoRoute(
+      path: '/edit_events/:id/:eventName',
+      name: '/edit_events',
+      builder: (BuildContext context, GoRouterState state) {
+        final eventId   = state.params['id'];
+        final eventName = state.params['eventName'];
+        if (eventId == null || eventName == null) return const SizedBox();
+        return EditEvent(
+            eventId: int.parse(eventId),
+            eventName: eventName
         );
       },
     ),

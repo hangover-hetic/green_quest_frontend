@@ -28,11 +28,6 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
   List<dynamic> participantsIds = [];
   int currentUserId = 30;
 
-  final TextEditingController _titleController       = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _longitudeController   = TextEditingController();
-  final TextEditingController _latitudeController    = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -81,22 +76,6 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
     }
   }
 
-  Future<void> updateEvent(int id) async {
-
-    final title = _titleController.text;
-    final description = _descriptionController.text;
-    final longitude = double.parse(_longitudeController.text);
-    final latitude = double.parse(_latitudeController.text);
-    final data = {
-      'title': title,
-      'description': description,
-      'longitude': longitude,
-      'latitude': latitude
-    };
-
-    await EventsServiceApi.updateEvent(data, id);
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Event>(
@@ -142,6 +121,24 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                   ),
                 ),
               ),
+              Row(
+                  children: <Widget>[
+                    Expanded(child: Padding(
+                      padding: const EdgeInsets.only(left: 250.0),
+                      child: ButtonTheme(
+                        minWidth: 10,
+                        height: 10,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              context.go('/edit_events/${event.id}/${event.title}');
+                            },
+                            child: const Text('Update Event'),
+                          ),
+                        )
+                      ),
+                    ),
+                  ],
+              ),
               Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(
@@ -175,40 +172,6 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                     ),
                   ],
                 ),
-              ),
-              Column(
-                children: [
-                  TextFormField(
-                    controller: _titleController,
-                    decoration: const InputDecoration(
-                      labelText: 'Titre',
-                    ),
-                  ),
-                  TextFormField(
-                    controller: _descriptionController,
-                    decoration: const InputDecoration(
-                        labelText: 'Description',
-                    ),
-                  ),
-                  TextFormField(
-                    controller: _longitudeController,
-                    decoration: const InputDecoration(
-                      labelText: 'Longitude',
-                    ),
-                  ),
-                  TextFormField(
-                    controller: _latitudeController,
-                    decoration: const InputDecoration(
-                      labelText: 'Latitude',
-                    ),
-                  ),
-                ],
-              ),
-              ElevatedButton(
-                onPressed: () => {
-                  updateEvent(event.id)
-                },
-                child: const Text('Update Event'),
               ),
               ElevatedButton(
                 onPressed: () {
