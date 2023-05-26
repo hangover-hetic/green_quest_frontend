@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
@@ -22,17 +24,18 @@ class EventdetailsScreen extends StatefulWidget {
 
 class _EventdetailsScreenState extends State<EventdetailsScreen> {
   late Future<Event> event;
-  final prefs = SharedPreferences.getInstance();
+
   late Future<bool> isParticipating;
   int participationId = 0;
   List<dynamic> participantsIds = [];
-  int currentUserId = 3;
+  int currentUserId = 0;
+
 
   @override
   void initState() {
     super.initState();
 
-    print(prefs.toString());
+
     event = ApiService.getEvent(widget.eventId);
     isParticipating = GetParticipationStatus(event);
 
@@ -40,6 +43,9 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
 
   Future<bool> GetParticipationStatus(Future<Event> event) async{
     Event eventEntity = await event;
+    final prefs = await SharedPreferences.getInstance();
+     currentUserId = jsonDecode(prefs.getString('user') ?? '')['id'] as int;
+
     participantsIds = eventEntity.participants
         .map((e) => extractIdFromUrl((e['userId'] ?? '') as String))
         .toList();
