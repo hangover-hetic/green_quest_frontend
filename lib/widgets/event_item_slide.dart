@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
+import 'package:green_quest_frontend/style/colors.dart';
 import 'package:latlong2/latlong.dart';
 
 class EventItemSlideWidget extends StatefulWidget {
@@ -43,7 +44,11 @@ class _EventItemSlideWidgetState extends State<EventItemSlideWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final width = MediaQuery
+        .of(context)
+        .size
+        .width;
+    final coverUrl = widget.event.coverUrl;
     return InkWell(
       onTap: () {
         context.push('/events/${widget.event.id}');
@@ -53,15 +58,26 @@ class _EventItemSlideWidgetState extends State<EventItemSlideWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
+            ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              child: coverUrl != null ? Image.network(
+                coverUrl,
+                fit: BoxFit.fitWidth,
+              ) : ColoredBox(
+                  color: Colors.grey.shade300,
+                  child: const SizedBox(
+                    width: double.infinity,
+                    height: 200,
+                  )),
+            )
+            ,
+            const SizedBox(height: 10),
             Text(
               widget.event.title,
               style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
+                  fontWeight: FontWeight.bold, fontSize: 20, color: green),
             ),
-            const SizedBox(height: 8),
-            Text(_shortDescription),
             const SizedBox(height: 8),
             if (_distance != null)
               Text(
@@ -73,6 +89,7 @@ class _EventItemSlideWidgetState extends State<EventItemSlideWidget> {
               )
             else
               const SizedBox(),
+            const SizedBox(height: 20),
           ],
         ),
       ),

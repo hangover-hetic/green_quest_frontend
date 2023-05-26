@@ -33,7 +33,13 @@ class FeedPostListScreenState extends State<FeedPostListScreen> {
   @override
   void initState() {
     super.initState();
-    posts = ApiService.getFeedPost(widget.feedId);
+    loadPosts();
+  }
+
+  void loadPosts() {
+    setState(() {
+      posts = ApiService.getFeedPost(widget.feedId);
+    });
   }
 
   @override
@@ -46,27 +52,33 @@ class FeedPostListScreenState extends State<FeedPostListScreen> {
             onBack: () {
               context.pop();
             },
-            body: ListView(
-              children: snapshot.data!
-                  .map(
-                    (post) => Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          FeedPostWidget(
-                            title: post.title,
-                            content: post.content,
-                            coverUrl: post.coverUrl,
-                            authorName:
-                                '${post.author.firstname} ${post.author.lastname}',
-                            createdAt: DateFormat.yMd().format(post.createdAt),
-                          ),
-                        ],
+            body: RefreshIndicator(
+              child: ListView(
+                children: snapshot.data!
+                    .map(
+                      (post) => Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            FeedPostWidget(
+                              title: post.title,
+                              content: post.content,
+                              coverUrl: post.coverUrl,
+                              authorName:
+                                  '${post.author.firstname} ${post.author.lastname}',
+                              createdAt:
+                                  DateFormat.yMd().format(post.createdAt),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                  .toList(),
+                    )
+                    .toList(),
+              ),
+              onRefresh: () async {
+                loadPosts();
+              },
             ),
             floatingActionButton: GqButton(
               onPressed: () {
