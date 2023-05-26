@@ -63,18 +63,13 @@ class ApiService {
       final response =
           await http.post(uri, headers: headers, body: json.encode(body));
       final bodyResp = json.decode(response.body);
-
-      switch (response.statusCode) {
-        case 200:
-        case 201:
-          callback(bodyResp);
-          break;
-        case 404:
-          throw Exception('Pas trouvé');
-        default:
-          throw Exception(
-            'Error : ${response.statusCode} ${bodyResp.toString() ?? ''}',
-          );
+      print(response.statusCode);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        callback(bodyResp);
+      } else {
+        throw Exception(
+          'Error : ${response.statusCode} ${response.reasonPhrase}',
+        );
       }
     } catch (e) {
       ApiService.processError(e);
@@ -92,17 +87,12 @@ class ApiService {
         uri,
         headers: headers,
       );
-      final bodyResponse = json.decode(response.body);
-
-      switch (response.statusCode) {
-        case 200:
-          break;
-        case 404:
-          throw Exception('Pas trouvé');
-        default:
-          throw Exception(
-            'Error : ${response.statusCode} ${bodyResponse?.details ?? ''}',
-          );
+      if (response.statusCode == 200 || response.statusCode == 201 || response.statusCode == 204){
+        callback("Succès");
+      } else {
+        throw Exception(
+          'Error : ${response.statusCode} ${response.reasonPhrase}',
+        );
       }
     } catch (e) {
       ApiService.processError(e);
@@ -226,10 +216,11 @@ class ApiService {
     await ApiService.makePostRequest(
       'api/participations',
       {
-        'event': '/api/events/$eventId',
-        'userId': '/api/users/$userId',
+        "event": "\/api\/events\/$eventId",
+        "userId": "\/api\/users\/$userId"
       },
       (p0) {
+
         Fluttertoast.showToast(
           msg: 'Vous êtes inscrit à l\'évènement',
           toastLength: Toast.LENGTH_SHORT,
@@ -240,6 +231,7 @@ class ApiService {
         );
         callback();
       },
+
     );
   }
 
@@ -293,9 +285,9 @@ class ApiService {
   }) async {
     await ApiService.makeDeleteRequest(
       'api/participations/$participationId',
-      (p0) {
+          (p0) {
         Fluttertoast.showToast(
-          msg: 'Vous êtes désinscrit de l\'évènement',
+          msg: 'Vous êtes désinscrit',
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           backgroundColor: Colors.green,

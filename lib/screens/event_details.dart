@@ -9,6 +9,7 @@ import 'package:green_quest_frontend/style/colors.dart';
 import 'package:green_quest_frontend/widgets/gq_button.dart';
 import 'package:green_quest_frontend/widgets/loading_view.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EventdetailsScreen extends StatefulWidget {
   const EventdetailsScreen({required this.eventId, super.key});
@@ -21,17 +22,20 @@ class EventdetailsScreen extends StatefulWidget {
 
 class _EventdetailsScreenState extends State<EventdetailsScreen> {
   late Future<Event> event;
-
+  final prefs = SharedPreferences.getInstance();
   late Future<bool> isParticipating;
   int participationId = 0;
   List<dynamic> participantsIds = [];
-  int currentUserId = 30;
+  int currentUserId = 3;
 
   @override
   void initState() {
     super.initState();
+
+    print(prefs.toString());
     event = ApiService.getEvent(widget.eventId);
     isParticipating = GetParticipationStatus(event);
+
   }
 
   Future<bool> GetParticipationStatus(Future<Event> event) async{
@@ -54,14 +58,15 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
 
   Future<void> ChangeParticipationStatus(Event event, int currentUser) async {
     if (!(await isParticipating)) {
+
       await ApiService.createParticipation(
           eventId: event.id.toString(),
           userId: currentUser.toString(),
-          callback: () {
+          callback: () => {
             setState(() {
               isParticipating = Future.value(true);
               participantsIds.add(currentUser.toString());
-            });
+            })
           });
     } else {
       await ApiService.deleteParticipation(
@@ -88,7 +93,7 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
         }
         final event = snapshot.data!;
         final coverUrl = event.coverUrl;
-        print(coverUrl);
+
         return Scaffold(
           appBar: AppBar(
             title: Text(event.title),
