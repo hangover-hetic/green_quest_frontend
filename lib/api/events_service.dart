@@ -34,7 +34,7 @@ class EventsServiceApi {
 
   static Future<List<Event>> updateEvent(data, id) async {
     try {
-      final url = Uri.parse(ApiConstants.greenQuest + "api/events/${id}");
+      final url = Uri.parse('${ApiConstants.greenQuest}api/events/$id');
       await http.put(
         url,
         headers: {'Content-type': 'application/json'},

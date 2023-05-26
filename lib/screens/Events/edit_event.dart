@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:green_quest_frontend/api/events_service.dart';
-import 'package:green_quest_frontend/screens/Events/postEvent_api.dart';
-import 'package:green_quest_frontend/api/models/main.dart';
-import 'package:green_quest_frontend/widgets/loading_view.dart';
 import 'package:go_router/go_router.dart';
+import 'package:green_quest_frontend/api/events_service.dart';
+import 'package:green_quest_frontend/api/models/main.dart';
 
 final _formKey = GlobalKey<FormState>();
 
@@ -12,7 +9,7 @@ class EditEvent extends StatefulWidget {
   const EditEvent({
     required this.eventId,
     required this.eventName,
-    super.key
+    super.key,
   });
 
   final String eventName;

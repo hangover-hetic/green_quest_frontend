@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/screens/Events/edit_event.dart';
 import 'package:green_quest_frontend/screens/Events/postEvent_api.dart';
-import 'package:green_quest_frontend/screens/Events/edit_event.dart';
 import 'package:green_quest_frontend/screens/event_details.dart';
 import 'package:green_quest_frontend/screens/feed/post_list/components/feed_post_create.dart';
 import 'package:green_quest_frontend/screens/feed/post_list/posts_list.dart';
@@ -72,7 +71,7 @@ final GoRouter router = GoRouter(
         if (eventId == null || eventName == null) return const SizedBox();
         return EditEvent(
             eventId: int.parse(eventId),
-            eventName: eventName
+            eventName: eventName,
         );
       },
     ),
