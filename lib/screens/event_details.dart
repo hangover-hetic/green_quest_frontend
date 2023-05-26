@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
+import 'package:green_quest_frontend/api/events_service.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
 import 'package:green_quest_frontend/api/models/user.dart';
 import 'package:green_quest_frontend/api/service.dart';
@@ -26,6 +27,11 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
   int participationId = 0;
   List<dynamic> participantsIds = [];
   int currentUserId = 30;
+
+  final TextEditingController _titleController       = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _longitudeController   = TextEditingController();
+  final TextEditingController _latitudeController    = TextEditingController();
 
   @override
   void initState() {
@@ -73,6 +79,22 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
             });
           });
     }
+  }
+
+  Future<void> updateEvent(int id) async {
+
+    final title = _titleController.text;
+    final description = _descriptionController.text;
+    final longitude = double.parse(_longitudeController.text);
+    final latitude = double.parse(_latitudeController.text);
+    final data = {
+      'title': title,
+      'description': description,
+      'longitude': longitude,
+      'latitude': latitude
+    };
+
+    await EventsServiceApi.updateEvent(data, id);
   }
 
   @override
@@ -153,6 +175,40 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                     ),
                   ],
                 ),
+              ),
+              Column(
+                children: [
+                  TextFormField(
+                    controller: _titleController,
+                    decoration: const InputDecoration(
+                      labelText: 'Titre',
+                    ),
+                  ),
+                  TextFormField(
+                    controller: _descriptionController,
+                    decoration: const InputDecoration(
+                        labelText: 'Description',
+                    ),
+                  ),
+                  TextFormField(
+                    controller: _longitudeController,
+                    decoration: const InputDecoration(
+                      labelText: 'Longitude',
+                    ),
+                  ),
+                  TextFormField(
+                    controller: _latitudeController,
+                    decoration: const InputDecoration(
+                      labelText: 'Latitude',
+                    ),
+                  ),
+                ],
+              ),
+              ElevatedButton(
+                onPressed: () => {
+                  updateEvent(event.id)
+                },
+                child: const Text('Update Event'),
               ),
               ElevatedButton(
                 onPressed: () {
