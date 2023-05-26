@@ -7,6 +7,7 @@ import 'package:green_quest_frontend/screens/feed/post_list/components/feed_post
 import 'package:green_quest_frontend/screens/feed/post_list/posts_list.dart';
 import 'package:green_quest_frontend/screens/guest/home.dart';
 import 'package:green_quest_frontend/screens/guest/login.dart';
+import 'package:green_quest_frontend/screens/guest/register.dart';
 import 'package:green_quest_frontend/screens/map_screen.dart';
 import 'package:green_quest_frontend/screens/ranking_screen.dart';
 import 'package:green_quest_frontend/screens/settings_screen.dart';
@@ -19,6 +20,12 @@ final GoRouter router = GoRouter(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
         return const HomeScreen();
+      },
+    ),
+    GoRoute(
+      path: '/register',
+      builder: (BuildContext context, GoRouterState state) {
+        return const RegisterForm();
       },
     ),
     GoRoute(

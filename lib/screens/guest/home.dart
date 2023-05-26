@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:green_quest_frontend/screens/guest/login.dart';
+import 'package:green_quest_frontend/screens/guest/register.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -76,7 +77,11 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      // Action du bouton
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const RegisterForm()),
+                      );
                     },
                     child: const Text(
                       'Sign up',

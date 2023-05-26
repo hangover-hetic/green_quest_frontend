@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +9,7 @@ import 'package:green_quest_frontend/api/utils.dart';
 import 'package:green_quest_frontend/style/colors.dart';
 import 'package:green_quest_frontend/widgets/loading_view.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EventdetailsScreen extends StatefulWidget {
   const EventdetailsScreen({required this.eventId, super.key});
@@ -23,17 +26,24 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
   late Future<bool> isParticipating;
   int participationId = 0;
   List<dynamic> participantsIds = [];
-  int currentUserId = 30;
+  int currentUserId = 0;
+
 
   @override
   void initState() {
     super.initState();
+
+
     event = ApiService.getEvent(widget.eventId);
     isParticipating = GetParticipationStatus(event);
+
   }
 
   Future<bool> GetParticipationStatus(Future<Event> event) async{
-    final eventEntity = await event;
+    Event eventEntity = await event;
+    final prefs = await SharedPreferences.getInstance();
+     currentUserId = jsonDecode(prefs.getString('user') ?? '')['id'] as int;
+
     participantsIds = eventEntity.participants
         .map((e) => extractIdFromUrl((e['userId'] ?? '') as String))
         .toList();
@@ -52,10 +62,11 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
 
   Future<void> ChangeParticipationStatus(Event event, int currentUser) async {
     if (!(await isParticipating)) {
+
       await ApiService.createParticipation(
           eventId: event.id.toString(),
           userId: currentUser.toString(),
-          callback: () {
+          callback: () => {
             setState(() {
               isParticipating = Future.value(true);
               participantsIds.add(currentUser.toString());
@@ -85,6 +96,8 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
           return Text('${snapshot.error}');
         }
         final event = snapshot.data!;
+        final coverUrl = event.coverUrl;
+
         return Scaffold(
           appBar: AppBar(
             title: Text(event.title),
@@ -108,6 +121,20 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (coverUrl != null)
+                Image.network(
+                  coverUrl,
+                  width: double.infinity,
+                  height: 200,
+                  fit: BoxFit.cover,
+                )
+              else
+                ColoredBox(
+                    color: Colors.grey.shade300,
+                    child: const SizedBox(
+                      width: double.infinity,
+                      height: 200,
+                    )),
               Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(

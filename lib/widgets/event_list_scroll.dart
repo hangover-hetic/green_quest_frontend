@@ -82,14 +82,8 @@ class EventListScrollWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const Text(
-                  'Events around me',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
                 const SizedBox(
-                  height: 12,
+                  height: 24,
                 ),
                 FutureBuilder<List<Event>>(
                   future: events,
