@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
-import 'package:green_quest_frontend/api/models/user.dart';
 import 'package:green_quest_frontend/api/service.dart';
 import 'package:green_quest_frontend/api/utils.dart';
 import 'package:green_quest_frontend/style/colors.dart';
-import 'package:green_quest_frontend/widgets/gq_button.dart';
 import 'package:green_quest_frontend/widgets/loading_view.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -72,8 +70,8 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
             setState(() {
               isParticipating = Future.value(true);
               participantsIds.add(currentUser.toString());
-            })
-          });
+            });
+          },);
     } else {
       await ApiService.deleteParticipation(
           participationId: participationId.toString(),
@@ -82,7 +80,7 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
               isParticipating = Future.value(false);
               participantsIds.remove(currentUser.toString());
             });
-          });
+          },);
     }
   }
 
@@ -147,6 +145,24 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                   ),
                 ),
               ),
+              Row(
+                  children: <Widget>[
+                    Expanded(child: Padding(
+                      padding: const EdgeInsets.only(left: 250),
+                      child: ButtonTheme(
+                        minWidth: 10,
+                        height: 10,
+                        child: ElevatedButton(
+                            onPressed: () {
+                              context.go('/edit_events/${event.id}/${event.title}');
+                            },
+                            child: const Text('Update Event'),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+              ),
               Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(
@@ -187,7 +203,7 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                 },
                 child: const Text('Go to feed'),
               ),
-              Text('Participants: ${participantsIds}'),
+              Text('Participants: $participantsIds'),
               ElevatedButton(
                 onPressed: () async {
                   await ChangeParticipationStatus(event, currentUserId);

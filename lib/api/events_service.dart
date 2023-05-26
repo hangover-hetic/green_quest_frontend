@@ -28,4 +28,18 @@ class EventsServiceApi {
         callback
     );
   }
+
+  static Future<List<Event>> updateEvent(data, id) async {
+    try {
+      final url = Uri.parse('${ApiConstants.greenQuest}api/events/$id');
+      await http.put(
+        url,
+        headers: {'Content-type': 'application/json'},
+        body: jsonEncode(data),
+      );
+    } catch (e) {
+      log(e.toString());
+    }
+    return [];
+  }
 }
