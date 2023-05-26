@@ -70,7 +70,7 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
             setState(() {
               isParticipating = Future.value(true);
               participantsIds.add(currentUser.toString());
-            });
+            })
           },);
     } else {
       await ApiService.deleteParticipation(
