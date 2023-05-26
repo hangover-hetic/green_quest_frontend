@@ -41,6 +41,8 @@ class LoginScreen extends State<LoginForm> {
       headers: {'Content-Type': 'application/json'},
     );
 
+    print(response.body);
+
     if (response.statusCode == 200) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(
@@ -109,7 +111,7 @@ class LoginScreen extends State<LoginForm> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const Text(
-                    'Welcome Back !',
+                    'Bienvenue !',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,

@@ -6,6 +6,7 @@ import 'package:green_quest_frontend/screens/guest/login.dart';
 
 //import appbar.dart
 import 'package:green_quest_frontend/widgets/appbar.dart';
+import 'package:green_quest_frontend/widgets/gq_button.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -80,7 +81,7 @@ class RegisterScreen extends State<RegisterForm> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const Text(
-                    'Welcome Back !',
+                    'Créer un compte',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -105,8 +106,6 @@ class RegisterScreen extends State<RegisterForm> {
                           controller: _emailController,
                           decoration: const InputDecoration(
                             labelText: 'Email',
-                            prefixIcon:
-                                Icon(Icons.email_outlined, color: Colors.green),
                           ),
                         ),
                         TextFormField(
@@ -115,9 +114,10 @@ class RegisterScreen extends State<RegisterForm> {
                               const InputDecoration(labelText: 'Mot de passe'),
                           obscureText: true,
                         ),
-                        ElevatedButton(
+                        const SizedBox(height: 16),
+                        GqButton(
                           onPressed: _register,
-                          child: const Text('Se connecter'),
+                          text: "S'inscrire",
                         ),
                         Text(
                           _errorMessage == '' ? _valid : _errorMessage,
