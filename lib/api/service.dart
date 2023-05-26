@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -47,23 +48,25 @@ class ApiService {
   }
 
   static Future<void> makePostRequest(
-      String url,
-      Map<String, String> body,
-      void Function(dynamic) callback, [
-        Map<String, String> headers = const {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      ]) async {
+    String url,
+    Map<String, dynamic> body,
+    void Function(dynamic) callback, [
+    Map<String, String> headers = const {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+  ]) async {
     try {
       final uri = Uri.parse(ApiConstants.greenQuest + url);
-      final response = await http.post(uri, headers: headers, body: json.encode(body));
+      print(uri);
+      final response =
+          await http.post(uri, headers: headers, body: json.encode(body));
 
       final bodyResp = json.decode(response.body);
 
       switch (response.statusCode) {
         case 200:
-
+          callback(bodyResp);
           break;
         case 404:
           throw Exception('Pas trouvé');
@@ -92,7 +95,6 @@ class ApiService {
 
       switch (response.statusCode) {
         case 200:
-
           break;
         case 404:
           throw Exception('Pas trouvé');
@@ -236,6 +238,40 @@ class ApiService {
           fontSize: 16,
         );
         callback();
+      },
+    );
+  }
+
+  static Future<void> RegisterUser({
+    required String email,
+    required String password,
+    required String firstname,
+    required String lastname,
+    required int exp,
+    required int blobs,
+    File? cover,
+    required String userIdentifier,
+  }) async {
+    await ApiService.makePostRequest(
+      'api/users',
+      {
+        'email': 'ab@gmail.com',
+        'password': 'password',
+        'firstname': 'adrien',
+        'lastname': 'bouteiller',
+        'exp': 0,
+        'blobs': 0,
+        'userIdentifier': 'adrien@gmail.com'
+      },
+      (p0) {
+        Fluttertoast.showToast(
+          msg: 'Votre inscription a été effectuée avec succès',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16,
+        );
       },
     );
   }
