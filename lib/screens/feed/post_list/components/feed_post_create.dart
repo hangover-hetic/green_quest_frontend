@@ -43,9 +43,9 @@ class FeedPostCreateScreenState extends State<FeedPostCreateScreen> {
       feedId: widget.feedId,
       cover: cover,
       //TODO : change authorId
-      authorId: 1,
+      authorId: 21,
       callback: () {
-        context.go('/feed/${widget.eventId}/${widget.feedId}');
+        context.pop();
       },
     );
   }

@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:green_quest_frontend/api/utils.dart';
+import '../utils.dart';
 
 class Event {
   Event({
@@ -9,6 +12,7 @@ class Event {
     required this.latitude,
     required this.feedId,
     required this.participants,
+    this.coverUrl,
   });
 
   Event.empty()
@@ -20,18 +24,20 @@ class Event {
           latitude: 0,
           feedId: 0,
           participants: [],
-        );
+            coverUrl: '');
 
   factory Event.fromJson(Map<String, dynamic> json) {
-    return Event(
+    final event = Event(
       title: (json['title'] ?? '') as String,
       description: (json['description'] ?? '') as String,
       id: json['id'] as int,
-      longitude: double.parse((json['longitude'] ?? 0).toString()),
-      latitude: double.parse((json['latitude'] ?? 0).toString()),
+      longitude: toDouble(json['longitude']),
+      latitude: toDouble(json['latitude']),
       feedId: json['feed'] as int,
+      coverUrl: getMediaUrl(json['coverUrl'] as String?),
       participants: json['participantIds'] as List<dynamic>,
     );
+    return event;
   }
 
   final String title;
@@ -40,6 +46,7 @@ class Event {
   final double longitude;
   final double latitude;
   final int feedId;
+  final String? coverUrl;
   final List<dynamic> participants;
 
   Map<String, dynamic> toJson() {

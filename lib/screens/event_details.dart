@@ -87,6 +87,8 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
           return Text('${snapshot.error}');
         }
         final event = snapshot.data!;
+        final coverUrl = event.coverUrl;
+        print(coverUrl);
         return Scaffold(
           appBar: AppBar(
             title: Text(event.title),
@@ -110,6 +112,20 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (coverUrl != null)
+                Image.network(
+                  coverUrl,
+                  width: double.infinity,
+                  height: 200,
+                  fit: BoxFit.cover,
+                )
+              else
+                ColoredBox(
+                    color: Colors.grey.shade300,
+                    child: const SizedBox(
+                      width: double.infinity,
+                      height: 200,
+                    )),
               Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(

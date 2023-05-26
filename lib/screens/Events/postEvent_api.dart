@@ -46,7 +46,7 @@ class CreateEventState extends State<CreateEvent> {
       'latitude': latitude.toString(),
     };
     await EventsServiceApi.postEvent(data, cover, (result) {
-      context.go('/events');
+      context.go('/map');
     });
   }
 
