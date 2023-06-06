@@ -12,12 +12,21 @@ import 'package:green_quest_frontend/screens/map_screen.dart';
 import 'package:green_quest_frontend/screens/ranking_screen.dart';
 import 'package:green_quest_frontend/screens/settings_screen.dart';
 import 'package:green_quest_frontend/screens/shop_screen.dart';
+import 'package:green_quest_frontend/utils/preferences.dart';
 
 // GoRouter configuration
 final GoRouter router = GoRouter(
   routes: <RouteBase>[
     GoRoute(
       path: '/',
+      redirect: (BuildContext context, GoRouterState state) async {
+        final token = await getToken();
+        debugPrint('token: $token');
+        if (token != null) {
+          return '/map';
+        }
+        return null;
+      },
       builder: (BuildContext context, GoRouterState state) {
         return const HomeScreen();
       },
@@ -73,12 +82,12 @@ final GoRouter router = GoRouter(
       path: '/edit_events/:id/:eventName',
       name: '/edit_events',
       builder: (BuildContext context, GoRouterState state) {
-        final eventId   = state.params['id'];
+        final eventId = state.params['id'];
         final eventName = state.params['eventName'];
         if (eventId == null || eventName == null) return const SizedBox();
         return EditEvent(
-            eventId: int.parse(eventId),
-            eventName: eventName,
+          eventId: int.parse(eventId),
+          eventName: eventName,
         );
       },
     ),
