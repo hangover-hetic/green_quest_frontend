@@ -17,13 +17,13 @@ class Event {
 
   Event.empty()
       : this(
-          title: '',
-          description: '',
-          id: 0,
-          longitude: 0,
-          latitude: 0,
-          feedId: 0,
-          participants: [],
+            title: '',
+            description: '',
+            id: 0,
+            longitude: 0,
+            latitude: 0,
+            feedId: 0,
+            participants: [],
             coverUrl: '');
 
   factory Event.fromJson(Map<String, dynamic> json) {

@@ -26,7 +26,7 @@ class EventListScrollWidget extends StatelessWidget {
       child: ListView(
         controller: scrollController,
         physics: canScroll
-            ? const AlwaysScrollableScrollPhysics()
+            ? const ClampingScrollPhysics()
             : const NeverScrollableScrollPhysics(),
         children: <Widget>[
           const ColoredBox(
@@ -48,7 +48,7 @@ class EventListScrollWidget extends StatelessWidget {
             color: green,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              children: const <Widget>[
                 Text(
                   'Explore Pittsburgh',
                   style: TextStyle(

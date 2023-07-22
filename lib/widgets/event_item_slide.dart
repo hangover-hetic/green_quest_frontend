@@ -44,10 +44,7 @@ class _EventItemSlideWidgetState extends State<EventItemSlideWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final width = MediaQuery.of(context).size.width;
     final coverUrl = widget.event.coverUrl;
     return InkWell(
       onTap: () {
@@ -58,20 +55,20 @@ class _EventItemSlideWidgetState extends State<EventItemSlideWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(10)),
-              child: coverUrl != null ? Image.network(
-                coverUrl,
-                fit: BoxFit.fitWidth,
-              ) : ColoredBox(
-                  color: Colors.grey.shade300,
-                  child: const SizedBox(
-                    width: double.infinity,
-                    height: 200,
-                  )),
-            )
-            ,
+              child: coverUrl != null
+                  ? Image.network(
+                      coverUrl,
+                      fit: BoxFit.fitWidth,
+                    )
+                  : ColoredBox(
+                      color: Colors.grey.shade300,
+                      child: const SizedBox(
+                        width: double.infinity,
+                        height: 200,
+                      )),
+            ),
             const SizedBox(height: 10),
             Text(
               widget.event.title,

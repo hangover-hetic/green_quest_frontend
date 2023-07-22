@@ -22,11 +22,7 @@ class EventsServiceApi {
   static Future<void> postEvent(Map<String, String> data, File coverFile,
       void Function(dynamic) callback) async {
     await ApiService.makeMultipartRequest(
-        'api/events',
-        data,
-        {'coverFile': coverFile},
-        callback
-    );
+        'api/events', data, {'coverFile': coverFile}, callback);
   }
 
   static Future<List<Event>> updateEvent(data, id) async {

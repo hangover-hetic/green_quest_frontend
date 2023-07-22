@@ -132,12 +132,6 @@ class CreateEventState extends State<CreateEvent> {
                 GqButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Great'),
-                          ),
-                        );
-
                         if (!cover!.existsSync()) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(

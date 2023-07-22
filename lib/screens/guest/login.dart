@@ -2,15 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:green_quest_frontend/api/service.dart';
 import 'package:green_quest_frontend/style/colors.dart';
-
-//import appbar.dart
+import 'package:green_quest_frontend/utils/preferences.dart';
 import 'package:green_quest_frontend/widgets/appbar.dart';
 import 'package:green_quest_frontend/widgets/gq_button.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../map_screen.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -23,63 +19,37 @@ class LoginScreen extends State<LoginForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String _errorMessage = '';
-  String _valid = '';
 
   Future<void> _login() async {
     final email = _emailController.text;
     final password = _passwordController.text;
 
-    // Appel à l'API pour l'authentification
-    final response = await http.post(
-      Uri.parse(
-        'https://api.greenquest.timotheedurand.fr/api/login_check',
-      ), // Remplacez cette URL par l'URL de votre API de connexion
-      body: jsonEncode({
-        'username': email,
-        'password': password,
-      }),
-      headers: {'Content-Type': 'application/json'},
-    );
+    final tokenResponse = await ApiService.post('api/login_check', {
+      'username': email,
+      'password': password,
+    });
 
-    print(response.body);
-
-    if (response.statusCode == 200) {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(
-          'token', jsonDecode(response.body)['token'] as String);
-
-      _valid = 'Connexion réussie';
-
-      final userInfo = await http.get(
-        Uri.parse(
-          'https://api.greenquest.timotheedurand.fr/api/me',
-        ), // Remplacez cette URL par l'URL de votre API de connexion
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${prefs.getString('token')}'
-        },
-      );
-
-      if (userInfo.statusCode == 200) {
-        await prefs.setString('user', userInfo.body);
-        print('oui');
-        print(prefs.getString('user'));
-      }
-
-      if (context.mounted) {
-        await Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const MapScreen()),
-        );
-      }
-      //mettre le token en storage
-    } else {
-      // Afficher un message d'erreur si la connexion échoue
+    if (tokenResponse == null) {
       setState(() {
-        print(email);
-        _errorMessage = 'Email ou mot de passe incorrect';
-        print(_errorMessage);
+        _errorMessage = 'Identifiants incorrects';
       });
+      return;
+    }
+
+    final token = tokenResponse['token'] as String;
+    await setToken(token);
+
+    final userInfo = await ApiService.get('api/me');
+    if (userInfo == null) {
+      setState(() {
+        _errorMessage = 'Identifiants incorrects';
+      });
+      return;
+    }
+    await setUser(jsonEncode(userInfo));
+
+    if (context.mounted) {
+      context.go('/map');
     }
   }
 
@@ -147,7 +117,7 @@ class LoginScreen extends State<LoginForm> {
                           text: 'Se connecter',
                         ),
                         Text(
-                          _errorMessage == '' ? _valid : _errorMessage,
+                          _errorMessage,
                           //faire un terner pour afficher en rouge si erreur et en vert si valid
                           style: TextStyle(
                             color:
