@@ -10,12 +10,11 @@ class Participation {
 
   Participation.empty()
       : this(
-    id: 0,
-    roles: [],
-    eventId: '',
-    userId: '',
-
-  );
+          id: 0,
+          roles: [],
+          eventId: '',
+          userId: '',
+        );
 
   factory Participation.fromJson(Map<String, dynamic> json) {
     return Participation(

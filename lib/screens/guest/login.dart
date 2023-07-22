@@ -98,7 +98,7 @@ class LoginScreen extends State<LoginForm> {
                           decoration: const InputDecoration(
                             labelText: 'Email',
                             prefixIcon:
-                            Icon(Icons.email_outlined, color: green),
+                                Icon(Icons.email_outlined, color: green),
                           ),
                         ),
                         TextFormField(
@@ -121,7 +121,7 @@ class LoginScreen extends State<LoginForm> {
                           //faire un terner pour afficher en rouge si erreur et en vert si valid
                           style: TextStyle(
                             color:
-                            _errorMessage == '' ? Colors.green : Colors.red,
+                                _errorMessage == '' ? Colors.green : Colors.red,
                           ),
                         ),
                       ],

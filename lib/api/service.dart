@@ -248,7 +248,6 @@ class ApiService {
     return null;
   }
 
-
   static Future<List<FeedPost>> getFeedPost(int feedId) async {
     var posts = <FeedPost>[];
     await ApiService.makeRequest('api/feeds/$feedId', (result) {
