@@ -2,14 +2,18 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
 import 'package:green_quest_frontend/api/service.dart';
 import 'package:green_quest_frontend/api/utils.dart';
 import 'package:green_quest_frontend/style/colors.dart';
+import 'package:green_quest_frontend/utils/preferences.dart';
 import 'package:green_quest_frontend/widgets/loading_view.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../utils/toast.dart';
 
 class EventdetailsScreen extends StatefulWidget {
   const EventdetailsScreen({required this.eventId, super.key});
@@ -21,73 +25,87 @@ class EventdetailsScreen extends StatefulWidget {
 }
 
 class _EventdetailsScreenState extends State<EventdetailsScreen> {
-  late Future<Event> event;
-
-  late Future<bool> isParticipating;
+  late Event event;
+  bool isParticipating = false;
+  late Future<void> loadingState;
   int participationId = 0;
   List<dynamic> participantsIds = [];
   int currentUserId = 0;
 
-
   @override
   void initState() {
     super.initState();
-
-
-    event = ApiService.getEvent(widget.eventId);
-    isParticipating = GetParticipationStatus(event);
-
+    loadingState = loadState();
   }
 
-  Future<bool> GetParticipationStatus(Future<Event> event) async{
-    Event eventEntity = await event;
-    final prefs = await SharedPreferences.getInstance();
-     currentUserId = jsonDecode(prefs.getString('user') ?? '')['id'] as int;
-
-    participantsIds = eventEntity.participants
-        .map((e) => extractIdFromUrl((e['userId'] ?? '') as String))
-        .toList();
-    if (eventEntity.participants.isEmpty) {
-      return false;
+  Future<void> loadState() async {
+    event = await ApiService.getEvent(widget.eventId);
+    final user = await getUser();
+    if (user == null) {
+      throw Exception('User not found');
     }
-    for (final participation in eventEntity.participants) {
+
+    setState(() {
+      currentUserId = user.id;
+
+      participantsIds = event.participants
+          .map((e) => extractIdFromUrl((e['userId'] ?? '') as String))
+          .toList();
+    });
+
+    if (event.participants.isEmpty) {
+      return;
+    }
+    for (final participation in event.participants) {
       if (extractIdFromUrl((participation['userId'] ?? '') as String) ==
           currentUserId.toString()) {
-        participationId = participation['id'] as int;
-        return true;
+        setState(() {
+          participationId = participation['id'] as int;
+          isParticipating = true;
+        });
       }
     }
-    return false;
   }
 
-  Future<void> ChangeParticipationStatus(Event event, int currentUser) async {
-    if (!(await isParticipating)) {
-
-      await ApiService.createParticipation(
-          eventId: event.id.toString(),
-          userId: currentUser.toString(),
-          callback: () => {
-            setState(() {
-              isParticipating = Future.value(true);
-              participantsIds.add(currentUser.toString());
-            })
-          },);
-    } else {
-      await ApiService.deleteParticipation(
-          participationId: participationId.toString(),
-          callback: () {
-            setState(() {
-              isParticipating = Future.value(false);
-              participantsIds.remove(currentUser.toString());
-            });
-          },);
+  Future<void> changeParticipationStatus(int currentUser) async {
+    final e = event;
+    if (!isParticipating) {
+      final eventId = e.id;
+      final result = await ApiService.post('api/participations', {
+        'event': '/api/events/$eventId',
+        'userId': '/api/users/$currentUser'
+      });
+      if (result == null) {
+        return;
+      }
+      setState(() {
+        participationId = result['id'] as int;
+        isParticipating = true;
+        participantsIds.add('$currentUser');
+      });
+      showSuccessToast('Vous participez à cet événement');
+      return;
     }
+    final result =
+        await ApiService.delete('api/participations/$participationId');
+    if (result == null || result == false) {
+      return;
+    }
+    final filteredParticipantsIds = participantsIds
+        .where((element) => element != currentUserId.toString())
+        .toList();
+    setState(() {
+      participationId = 0;
+      isParticipating = false;
+      participantsIds = filteredParticipantsIds;
+    });
+    showSuccessToast('Vous ne participez plus à cet événement');
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Event>(
-      future: event,
+    return FutureBuilder<void>(
+      future: loadingState,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const LoadingViewWidget();
@@ -95,7 +113,6 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
         if (snapshot.hasError) {
           return Text('${snapshot.error}');
         }
-        final event = snapshot.data!;
         final coverUrl = event.coverUrl;
 
         return Scaffold(
@@ -114,6 +131,12 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                 onPressed: () {
                   context
                       .push('/feed/${event.id}/${event.feedId}/${event.title}');
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () {
+                  context.push('/edit_events/${event.id}/${event.title}');
                 },
               ),
             ],
@@ -144,24 +167,6 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                     fontSize: 20,
                   ),
                 ),
-              ),
-              Row(
-                  children: <Widget>[
-                    Expanded(child: Padding(
-                      padding: const EdgeInsets.only(left: 250),
-                      child: ButtonTheme(
-                        minWidth: 10,
-                        height: 10,
-                        child: ElevatedButton(
-                            onPressed: () {
-                              context.go('/edit_events/${event.id}/${event.title}');
-                            },
-                            child: const Text('Update Event'),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
               ),
               Padding(
                 padding: const EdgeInsets.all(8),
@@ -197,51 +202,29 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                   ],
                 ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  context.go('/feed/${event.feedId}');
-                },
-                child: const Text('Go to feed'),
-              ),
-              Text('Participants: $participantsIds'),
-              ElevatedButton(
-                onPressed: () async {
-                  await ChangeParticipationStatus(event, currentUserId);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0E756E),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: FutureBuilder<bool>(
-                  future: isParticipating,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Text(
-                        'Loading...',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      );
-                    }
-                    if (snapshot.hasData) {
-                      return Text(
-                        snapshot.data! ? 'Leave' : 'Join',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      );
-                    }
-                    return const SizedBox();
-                  },
-                ),
-              ),
             ],
           ),
+          floatingActionButton: ElevatedButton(
+              onPressed: () async {
+                await changeParticipationStatus(currentUserId);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+              ),
+              child: Text(
+                isParticipating ? 'Leave' : 'Join',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400,
+                ),
+              )),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
         );
       },
     );

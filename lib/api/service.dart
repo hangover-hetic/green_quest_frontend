@@ -76,13 +76,7 @@ class ApiService {
           await http.post(uri, headers: headers, body: json.encode(body));
       final bodyResp = json.decode(response.body);
       print(response.statusCode);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        callback(bodyResp);
-      } else {
-        throw Exception(
-          'Error : ${response.statusCode} ${response.reasonPhrase}',
-        );
-      }
+      ApiService.handleResponse(response);
     } catch (e) {
       ApiService.processError(e);
     }
@@ -90,16 +84,21 @@ class ApiService {
 
   static Map<String, dynamic> handleResponse(Response response) {
     final body = json.decode(response.body);
+    debugPrint('url : ${response.request?.url.toString() ?? ''}');
     switch (response.statusCode) {
       case 200:
       case 201:
+      case 204:
         return body as Map<String, dynamic>;
       case 404:
+        debugPrint(jsonEncode(body));
         throw Exception('Pas trouvé');
       case 401:
+        setToken('');
+        debugPrint(jsonEncode(body));
         throw Exception('Non autorisé');
       default:
-        print(body);
+        debugPrint(jsonEncode(body));
         throw Exception(
           'Error : ${response.statusCode} ${response.reasonPhrase}',
         );
@@ -144,18 +143,25 @@ class ApiService {
         uri,
         headers: headers,
       );
-      if (response.statusCode == 200 ||
-          response.statusCode == 201 ||
-          response.statusCode == 204) {
-        callback("Succès");
-      } else {
-        throw Exception(
-          'Error : ${response.statusCode} ${response.reasonPhrase}',
-        );
-      }
+      ApiService.handleResponse(response);
     } catch (e) {
       ApiService.processError(e);
     }
+  }
+
+  static Future<bool?> delete(String url) async {
+    try {
+      final uri = ApiService.getUrl(url);
+      final headers = await ApiService.getHeaders();
+      final response = await http.delete(
+        uri,
+        headers: headers,
+      );
+      return response.statusCode == 204;
+    } catch (e) {
+      ApiService.processError(e);
+    }
+    return null;
   }
 
   static Future<void> makeMultipartRequest(
@@ -203,38 +209,45 @@ class ApiService {
     }
   }
 
-  static Future<void> createPost({
-    required String title,
-    required String content,
-    required int feedId,
-    required int authorId,
-    required Function callback,
-    File? cover,
-  }) async {
-    var files = <String, File>{};
-    if (cover != null) {
-      files = {'imageFile': cover};
+  static Future<Map<String, dynamic>?> multipart(
+      String url, Map<String, String> body, Map<String, File> files) async {
+    try {
+      final uri = ApiService.getUrl(url);
+      final headers = await ApiService.getHeaders();
+      final request = http.MultipartRequest('POST', uri);
+      if (files.isNotEmpty) {
+        for (final file in files.entries) {
+          final stream = http.ByteStream(file.value.openRead());
+          final length = await file.value.length();
+          final multipartFile = http.MultipartFile(
+            'coverFile',
+            stream,
+            length,
+            filename: file.value.path.split('/').last,
+          );
+          request.files.add(multipartFile);
+        }
+      }
+
+      request.fields.addAll(body);
+      request.headers.addAll(headers);
+
+      final response = await request.send();
+      final respStr = await response.stream.bytesToString();
+      final jsonResp = json.decode(respStr);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return jsonResp as Map<String, dynamic>;
+      } else {
+        throw Exception(
+          'Error : ${response.statusCode} ${response.reasonPhrase}',
+        );
+      }
+    } catch (e) {
+      ApiService.processError(e);
     }
-    await ApiService.makeMultipartRequest(
-        'api/feed_posts',
-        {
-          'title': title,
-          'content': content,
-          'feed': '/api/feeds/$feedId',
-          'author': '/api/users/$authorId'
-        },
-        files, (p0) {
-      Fluttertoast.showToast(
-        msg: 'Votre post a été créé avec succès',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16,
-      );
-      callback();
-    });
+    return null;
   }
+
 
   static Future<List<FeedPost>> getFeedPost(int feedId) async {
     var posts = <FeedPost>[];
@@ -248,11 +261,11 @@ class ApiService {
   }
 
   static Future<Event> getEvent(int eventId) async {
-    var event = Event.empty();
-    await ApiService.makeRequest('api/events/$eventId', (result) {
-      event = Event.fromJson(result as Map<String, dynamic>);
-    });
-    return event;
+    final result = await ApiService.get('api/events/$eventId');
+    if (result == null) {
+      throw Exception('Pas trouvé');
+    }
+    return Event.fromJson(result);
   }
 
   static Future<List<Event>> getListEvents() async {
@@ -337,6 +350,8 @@ class ApiService {
     required String participationId,
     required Function callback,
   }) async {
+    debugPrint('participationId: $participationId');
+
     await ApiService.makeDeleteRequest(
       'api/participations/$participationId',
       (p0) {

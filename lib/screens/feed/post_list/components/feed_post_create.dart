@@ -1,15 +1,13 @@
-import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:green_quest_frontend/api/service.dart';
-import 'package:green_quest_frontend/style/colors.dart';
-import 'package:green_quest_frontend/widgets/gq_button.dart';
-import 'package:image_picker/image_picker.dart';
 
-import '../../../../widgets/gq_page_scaffold.dart';
-import '../../../../widgets/img_picker.dart';
+import 'package:green_quest_frontend/api/service.dart';
+import 'package:green_quest_frontend/utils/preferences.dart';
+import 'package:green_quest_frontend/utils/toast.dart';
+import 'package:green_quest_frontend/widgets/gq_button.dart';
+import 'package:green_quest_frontend/widgets/gq_page_scaffold.dart';
+import 'package:green_quest_frontend/widgets/img_picker.dart';
 
 class FeedPostCreateScreen extends StatefulWidget {
   const FeedPostCreateScreen({
@@ -37,17 +35,26 @@ class FeedPostCreateScreenState extends State<FeedPostCreateScreen> {
   }
 
   Future<void> postPost(BuildContext context) async {
-    await ApiService.createPost(
-      title: title,
-      content: content,
-      feedId: widget.feedId,
-      cover: cover,
-      //TODO : change authorId
-      authorId: 21,
-      callback: () {
-        context.pop();
-      },
-    );
+    final user = await getUser();
+    if (user == null) {
+      if (context.mounted) context.go('/login');
+      return;
+    }
+    final coverFile = cover;
+    if (coverFile == null) {
+      showErrorToast('Veuillez ajouter une image');
+      return;
+    }
+    await ApiService.multipart('api/feed_posts', {
+      'title': title,
+      'content': content,
+      'feed': '/api/feeds/${widget.feedId}',
+      'author': '/api/users/${user.id}'
+    }, {
+      'imageFile': coverFile
+    });
+    showSuccessToast('Post créé avec succès');
+    if (context.mounted) context.pop();
   }
 
   @override
