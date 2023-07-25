@@ -23,7 +23,7 @@ class EventItemSlideWidget extends StatefulWidget {
 
 class _EventItemSlideWidgetState extends State<EventItemSlideWidget> {
   late String _shortDescription;
-  late double _distance;
+  double _distance = 0;
 
   @override
   void initState() {

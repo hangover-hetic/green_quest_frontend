@@ -10,6 +10,7 @@ class MapWithEventMarkers extends StatelessWidget {
     required this.events,
     super.key,
   });
+
   final MapController mapController;
   final LatLng currentLatLng;
   final Future<List<Event>> events;
@@ -22,8 +23,8 @@ class MapWithEventMarkers extends StatelessWidget {
         height: 80,
         point: currentLatLng,
         builder: (context) => const Icon(
-          Icons.location_pin,
-          color: Colors.red,
+          Icons.person,
+          color: Colors.blue,
           size: 45,
         ),
       ),
@@ -46,6 +47,7 @@ class MapWithEventMarkers extends StatelessWidget {
       }),
     );
 
+    print("here");
     return FlutterMap(
       mapController: mapController,
       options: MapOptions(
