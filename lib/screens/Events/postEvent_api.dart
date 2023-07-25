@@ -1,13 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:green_quest_frontend/api/events_service.dart';
 import 'package:green_quest_frontend/api/models/main.dart';
-import 'package:green_quest_frontend/widgets/gq_button.dart';
+import 'package:green_quest_frontend/widgets/date_input.dart';
 import 'package:green_quest_frontend/widgets/gq_page_scaffold.dart';
+import 'package:green_quest_frontend/widgets/img_picker.dart';
 
-import '../../widgets/img_picker.dart';
+import '../../api/service.dart';
+import '../../widgets/gq_button.dart';
 
 final _formKey = GlobalKey<FormState>();
 
@@ -31,12 +33,16 @@ class CreateEventState extends State<CreateEvent> {
   final TextEditingController _latitudeTEC = TextEditingController();
   final TextEditingController _longitudeTEC = TextEditingController();
   File? cover;
+  DateTime date = DateTime.now();
+  int maxParticipationNumber = 10;
 
   Future<void> postEvent(
     String title,
     String description,
     double latitude,
     double longitude,
+    DateTime date,
+    int maxParticipationNumber,
     File cover,
   ) async {
     final data = <String, String>{
@@ -44,10 +50,12 @@ class CreateEventState extends State<CreateEvent> {
       'description': description,
       'longitude': longitude.toString(),
       'latitude': latitude.toString(),
+      'date': date.toIso8601String(),
+      'maxParticipationNumber': maxParticipationNumber.toString(),
     };
-    await EventsServiceApi.postEvent(data, cover, (result) {
-      context.go('/map');
-    });
+    await ApiService.makeMultipartRequest(
+        'api/events', data, {'coverFile': cover});
+    if (context.mounted) context.go('/map');
   }
 
   @override
@@ -96,6 +104,9 @@ class CreateEventState extends State<CreateEvent> {
                   decoration: const InputDecoration(
                     labelText: 'Description',
                   ),
+                  minLines: 6,
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
                   controller: _descriptionTEC,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -104,6 +115,31 @@ class CreateEventState extends State<CreateEvent> {
                     return null;
                   },
                 ),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Nombre maximum de participants',
+                  ),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  onChanged: (v) {
+                    setState(() {
+                      maxParticipationNumber = int.parse(v);
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Enter Something';
+                    }
+                    return null;
+                  },
+                ),
+                DateInput(
+                    date: date,
+                    onChanged: (date) {
+                      setState(() {
+                        this.date = date;
+                      });
+                    }),
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Latitude',
@@ -146,11 +182,11 @@ class CreateEventState extends State<CreateEvent> {
                         final latitude = double.parse(_latitudeTEC.text);
                         final longitude = double.parse(_longitudeTEC.text);
 
-                        postEvent(
-                            title, description, latitude, longitude, cover!);
+                        postEvent(title, description, latitude, longitude, date,
+                            maxParticipationNumber, cover!);
                       }
                     },
-                    text: 'Validate'),
+                    text: 'Créer'),
               ],
             ),
           ),

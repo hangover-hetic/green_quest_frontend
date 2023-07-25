@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
 import 'package:green_quest_frontend/style/colors.dart';
+import 'package:green_quest_frontend/widgets/icon_text.dart';
 import 'package:latlong2/latlong.dart';
+
+import '../utils/date.dart';
 
 class EventItemSlideWidget extends StatefulWidget {
   const EventItemSlideWidget({
@@ -59,6 +62,8 @@ class _EventItemSlideWidgetState extends State<EventItemSlideWidget> {
               borderRadius: const BorderRadius.all(Radius.circular(10)),
               child: coverUrl != null
                   ? Image.network(
+                      height: 200,
+                      width: width,
                       coverUrl,
                       fit: BoxFit.fitWidth,
                     )
@@ -77,15 +82,28 @@ class _EventItemSlideWidgetState extends State<EventItemSlideWidget> {
             ),
             const SizedBox(height: 8),
             if (_distance != null)
-              Text(
-                'Distance: ${_distance.toStringAsFixed(2)} km',
+              IconText(
+                icon: Icons.location_on,
+                text: '${_distance.toStringAsFixed(2)} km',
                 style: const TextStyle(
-                  fontStyle: FontStyle.italic,
                   color: Colors.grey,
                 ),
-              )
-            else
-              const SizedBox(),
+              ),
+            IconText(
+              icon: Icons.calendar_today,
+              text: formatDateTimeComplete(widget.event.date),
+              style: const TextStyle(
+                color: Colors.grey,
+              ),
+            ),
+            IconText(
+              icon: Icons.accessibility_sharp,
+              text:
+                  '${widget.event.author.firstname ?? ''} ${widget.event.author.lastname ?? ''}',
+              style: const TextStyle(
+                color: Colors.grey,
+              ),
+            ),
             const SizedBox(height: 20),
           ],
         ),

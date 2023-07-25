@@ -54,7 +54,7 @@ class FeedPostCreateScreenState extends State<FeedPostCreateScreen> {
       'imageFile': coverFile
     });
     showSuccessToast('Post créé avec succès');
-    if (context.mounted) context.pop();
+    if (context.mounted) context.pop(true);
   }
 
   @override

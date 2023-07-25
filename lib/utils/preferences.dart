@@ -5,13 +5,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../api/models/user.dart';
 
 Future<void> setToken(String token) async {
+  print('settoken: $token');
   final prefs = await SharedPreferences.getInstance();
-  await prefs.setString('token', token);
+  await prefs.setString('gttoken', token);
 }
 
 Future<String?> getToken() async {
   final prefs = await SharedPreferences.getInstance();
-  return prefs.getString('token');
+  final token = prefs.getString('gttoken');
+  print('gettoken: $token');
+  return token;
 }
 
 Future<void> setUser(String user) async {

@@ -1,7 +1,6 @@
-import 'dart:math';
-
+import 'package:green_quest_frontend/api/models/participation.dart';
+import 'package:green_quest_frontend/api/models/user.dart';
 import 'package:green_quest_frontend/api/utils.dart';
-import '../utils.dart';
 
 class Event {
   Event({
@@ -11,33 +10,40 @@ class Event {
     required this.longitude,
     required this.latitude,
     required this.feedId,
-    required this.participants,
+    required this.participantsNumber,
+    required this.date,
+    required this.author,
+    required this.maxParticipationNumber,
     this.coverUrl,
+    this.participations,
   });
 
-  Event.empty()
-      : this(
-            title: '',
-            description: '',
-            id: 0,
-            longitude: 0,
-            latitude: 0,
-            feedId: 0,
-            participants: [],
-            coverUrl: '');
-
   factory Event.fromJson(Map<String, dynamic> json) {
-    final event = Event(
-      title: (json['title'] ?? '') as String,
-      description: (json['description'] ?? '') as String,
-      id: json['id'] as int,
-      longitude: toDouble(json['longitude']),
-      latitude: toDouble(json['latitude']),
-      feedId: json['feed'] as int,
-      coverUrl: getMediaUrl(json['coverUrl'] as String?),
-      participants: json['participantIds'] as List<dynamic>,
-    );
-    return event;
+    try {
+      List<Participation>? participations;
+      if (json['participations'] != null) {
+        participations = (json['participations'] as List<dynamic>)
+            .map((e) => Participation.fromJson(e as Map<String, dynamic>))
+            .toList();
+      }
+      final event = Event(
+          title: (json['title'] ?? '') as String,
+          description: (json['description'] ?? '') as String,
+          id: json['id'] as int,
+          longitude: toDouble(json['longitude']),
+          latitude: toDouble(json['latitude']),
+          feedId: json['feed'] as int,
+          coverUrl: getMediaUrl(json['coverUrl'] as String?),
+          participantsNumber: json['participantsNumber'] as int,
+          date: DateTime.parse(json['date'] as String),
+          author: User.fromJson(json['author'] as Map<String, dynamic>),
+          maxParticipationNumber: json['maxParticipationNumber'] as int,
+          participations: participations);
+      return event;
+    } catch (e) {
+      print(e);
+      throw Exception('Failed to load event');
+    }
   }
 
   final String title;
@@ -46,8 +52,12 @@ class Event {
   final double longitude;
   final double latitude;
   final int feedId;
+  final DateTime date;
+  final User author;
   final String? coverUrl;
-  final List<dynamic> participants;
+  final int participantsNumber;
+  final int maxParticipationNumber;
+  final List<Participation>? participations;
 
   Map<String, dynamic> toJson() {
     return {

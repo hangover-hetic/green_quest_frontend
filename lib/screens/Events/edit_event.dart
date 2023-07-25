@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:green_quest_frontend/api/events_service.dart';
-import 'package:green_quest_frontend/api/models/main.dart';
+import 'package:green_quest_frontend/api/service.dart';
+import 'package:green_quest_frontend/widgets/date_input.dart';
 import 'package:green_quest_frontend/widgets/gq_button.dart';
 import 'package:green_quest_frontend/widgets/gq_page_scaffold.dart';
+
+import '../../widgets/loading_view.dart';
 
 final _formKey = GlobalKey<FormState>();
 
@@ -22,17 +25,33 @@ class EditEvent extends StatefulWidget {
 }
 
 class EditEventState extends State<EditEvent> {
-  late Future<List<Event>> sendEventToApi;
-  late Future<Event> event;
-
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _longitudeController = TextEditingController();
   final TextEditingController _latitudeController = TextEditingController();
+  int maxParticipationNumber = 0;
+  bool isLoading = true;
+  DateTime date = DateTime.now();
 
   @override
   void initState() {
     super.initState();
+    loadEvent();
+  }
+
+  Future<void> loadEvent() async {
+    var event = await ApiService.getEvent(widget.eventId);
+    _titleController.value = TextEditingValue(text: event.title);
+    _descriptionController.value = TextEditingValue(text: event.description);
+    _longitudeController.value =
+        TextEditingValue(text: event.longitude.toString());
+    _latitudeController.value =
+        TextEditingValue(text: event.latitude.toString());
+    setState(() {
+      maxParticipationNumber = event.maxParticipationNumber;
+      date = event.date;
+      isLoading = false;
+    });
   }
 
   Future<void> updateEvent() async {
@@ -45,87 +64,120 @@ class EditEventState extends State<EditEvent> {
       'title': title,
       'description': description,
       'longitude': longitude,
-      'latitude': latitude
+      'latitude': latitude,
+      'date': date.toIso8601String(),
+      'maxParticipationNumber': maxParticipationNumber,
     };
 
-    await EventsServiceApi.updateEvent(data, widget.eventId);
+    await ApiService.put('api/events/${widget.eventId}', data);
+    if (context.mounted) context.pop(true);
   }
 
   @override
   Widget build(BuildContext context) {
     return GqPageScaffold(
-      title: 'Paramétrer votre évènement',
+      title: 'Modifier ${widget.eventName}',
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: Center(
           child: Form(
             key: _formKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: _titleController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter Something';
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'Title',
-                    hintText: 'Title',
-                    contentPadding: EdgeInsets.only(bottom: 2),
+            child: isLoading
+                ? const LoadingViewWidget()
+                : Column(
+                    children: [
+                      TextFormField(
+                        controller: _titleController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Enter Something';
+                          }
+                          return null;
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Titre',
+                        ),
+                      ),
+                      TextFormField(
+                        controller: _descriptionController,
+                        minLines: 6,
+                        maxLines: null,
+                        keyboardType: TextInputType.multiline,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Enter Something';
+                          }
+                          return null;
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Description',
+                          hintText: 'Description',
+                        ),
+                      ),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'Nombre maximum de participants',
+                        ),
+                        initialValue: maxParticipationNumber.toString(),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        onChanged: (v) {
+                          setState(() {
+                            maxParticipationNumber = int.parse(v);
+                          });
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Enter Something';
+                          }
+                          return null;
+                        },
+                      ),
+                      DateInput(
+                        date: date,
+                        onChanged: (date) {
+                          setState(() {
+                            this.date = date;
+                          });
+                        },
+                      ),
+                      TextFormField(
+                        controller: _longitudeController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Enter Something';
+                          }
+                          return null;
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Longitude',
+                        ),
+                      ),
+                      TextFormField(
+                        controller: _latitudeController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Enter Something';
+                          }
+                          return null;
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Latitude',
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      GqButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            updateEvent();
+                          }
+                        },
+                        text: 'Mettre à jour',
+                      ),
+                    ],
                   ),
-                ),
-                TextFormField(
-                  controller: _descriptionController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter Something';
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
-                    hintText: 'Description',
-                    contentPadding: EdgeInsets.only(bottom: 2),
-                  ),
-                ),
-                TextFormField(
-                  controller: _longitudeController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter Something';
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'longitude',
-                    contentPadding: EdgeInsets.only(bottom: 2),
-                  ),
-                ),
-                TextFormField(
-                  controller: _latitudeController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter Something';
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'latitude',
-                    contentPadding: EdgeInsets.only(bottom: 2),
-                  ),
-                ),
-                GqButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      updateEvent();
-                    }
-                  },
-                  text: 'Mettre à jour',
-                ),
-              ],
-            ),
           ),
         ),
       ),

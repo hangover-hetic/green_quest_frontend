@@ -13,8 +13,8 @@ import '../screens/guest/login.dart';
 import '../utils/toast.dart';
 
 class ApiService {
-  static void processError(dynamic e) {
-    debugPrint(e.toString());
+  static void processError(String url, dynamic e) {
+    debugPrint('url: $url | error: ${e.toString()}');
     showErrorToast(e.toString());
   }
 
@@ -29,22 +29,19 @@ class ApiService {
     };
     final token = await getToken();
     if (token != null) {
-      print('token: $token');
       headers['Authorization'] = 'Bearer $token';
     }
+    print('headers: ${headers.toString()}');
     return headers;
   }
 
   static Future<void> makeRequest(
-    String url,
-    void Function(dynamic) callback, [
-    Map<String, String> headers = const {'accept': 'application/json'},
-  ]) async {
+      String url, void Function(dynamic) callback) async {
     try {
+      final headers = await ApiService.getHeaders();
       final uri = ApiService.getUrl(url);
       final response = await http.get(uri, headers: headers);
       final body = json.decode(response.body);
-      debugPrint(body.toString());
       switch (response.statusCode) {
         case 200:
           callback(body);
@@ -53,11 +50,11 @@ class ApiService {
           throw Exception('Pas trouvé');
         default:
           throw Exception(
-            'Error : ${response.statusCode} ${body?.details ?? ''}',
+            'Error : ${response.statusCode} ${body.toString()}',
           );
       }
     } catch (e) {
-      ApiService.processError(e);
+      ApiService.processError(url, e);
     }
   }
 
@@ -78,7 +75,7 @@ class ApiService {
       print(response.statusCode);
       ApiService.handleResponse(response);
     } catch (e) {
-      ApiService.processError(e);
+      ApiService.processError(url, e);
     }
   }
 
@@ -94,9 +91,13 @@ class ApiService {
         debugPrint(jsonEncode(body));
         throw Exception('Pas trouvé');
       case 401:
-        setToken('');
         debugPrint(jsonEncode(body));
-        throw Exception('Non autorisé');
+        if (body['message'] == 'Expired JWT Token' ||
+            body['message'] == 'JWT Token not found') {
+          setToken('');
+        }
+        throw Exception(body['detail'] ?? 'Non autorisé');
+
       default:
         debugPrint(jsonEncode(body));
         throw Exception(
@@ -115,7 +116,7 @@ class ApiService {
           await http.post(uri, headers: headers, body: json.encode(body));
       return ApiService.handleResponse(response);
     } on Exception catch (e) {
-      ApiService.processError(e);
+      ApiService.processError(url, e);
     }
     return null;
   }
@@ -127,7 +128,7 @@ class ApiService {
       final response = await http.get(uri, headers: headers);
       return ApiService.handleResponse(response);
     } catch (e) {
-      ApiService.processError(e);
+      ApiService.processError(url, e);
     }
     return null;
   }
@@ -145,7 +146,7 @@ class ApiService {
       );
       ApiService.handleResponse(response);
     } catch (e) {
-      ApiService.processError(e);
+      ApiService.processError(url, e);
     }
   }
 
@@ -159,19 +160,16 @@ class ApiService {
       );
       return response.statusCode == 204;
     } catch (e) {
-      ApiService.processError(e);
+      ApiService.processError(url, e);
     }
     return null;
   }
 
   static Future<void> makeMultipartRequest(
-    String url,
-    Map<String, String> body,
-    Map<String, File> files,
-    void Function(dynamic) callback, [
-    Map<String, String> headers = const {},
-  ]) async {
+      String url, Map<String, String> body, Map<String, File> files) async {
     try {
+      final headers = await ApiService.getHeaders();
+      print(headers);
       final uri = ApiService.getUrl(url);
       final request = http.MultipartRequest('POST', uri);
       if (files.isNotEmpty) {
@@ -196,16 +194,17 @@ class ApiService {
       print(response.statusCode);
 
       final respStr = await response.stream.bytesToString();
+      final debugHeader = response.headers;
       final jsonResp = json.decode(respStr);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        callback(jsonResp);
+        return jsonResp;
       } else {
         throw Exception(
-          'Error : ${response.statusCode} ${response.reasonPhrase}',
+          'Error : ${response.statusCode} ${jsonResp.toString()} ${debugHeader.toString()}',
         );
       }
     } catch (e) {
-      ApiService.processError(e);
+      ApiService.processError(url, e);
     }
   }
 
@@ -243,7 +242,7 @@ class ApiService {
         );
       }
     } catch (e) {
-      ApiService.processError(e);
+      ApiService.processError(url, e);
     }
     return null;
   }
@@ -309,7 +308,6 @@ class ApiService {
     required String lastname,
     required int exp,
     required int blobs,
-    required Function callback,
     File? cover,
     required String userIdentifier,
   }) async {
@@ -340,7 +338,6 @@ class ApiService {
           textColor: Colors.white,
           fontSize: 16,
         );
-        callback();
       },
     );
   }
@@ -386,5 +383,20 @@ class ApiService {
         );
       },
     );
+  }
+
+  static Future<Map<String, dynamic>?> put(
+      String url, Map<String, dynamic> body) async {
+    try {
+      final uri = ApiService.getUrl(url);
+      print('put to $uri');
+      final headers = await ApiService.getHeaders();
+      final response =
+          await http.put(uri, headers: headers, body: json.encode(body));
+      return ApiService.handleResponse(response);
+    } on Exception catch (e) {
+      ApiService.processError(url, e);
+    }
+    return null;
   }
 }

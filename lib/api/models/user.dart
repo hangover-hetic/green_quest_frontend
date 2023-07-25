@@ -8,6 +8,7 @@ class User {
       lastname: (json['lastname'] ?? '') as String,
     );
   }
+
   final int id;
   final String firstname;
   final String lastname;

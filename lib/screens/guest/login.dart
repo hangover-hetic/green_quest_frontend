@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/api/service.dart';
 import 'package:green_quest_frontend/style/colors.dart';
 import 'package:green_quest_frontend/utils/preferences.dart';
-import 'package:green_quest_frontend/widgets/appbar.dart';
+import 'package:green_quest_frontend/screens/guest/widget/appbar.dart';
 import 'package:green_quest_frontend/widgets/gq_button.dart';
 
 class LoginForm extends StatefulWidget {
