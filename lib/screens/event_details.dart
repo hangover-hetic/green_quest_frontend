@@ -94,12 +94,12 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
     }
 
     final result =
-    await ApiService.delete('api/participations/$participationId');
+        await ApiService.delete('api/participations/$participationId');
     if (result == null || result == false) {
       return;
     }
     final filteredParticipantsIds =
-    participantsIds.where((element) => element != currentUserId).toList();
+        participantsIds.where((element) => element != currentUserId).toList();
     setState(() {
       participationId = 0;
       isParticipating = false;
@@ -145,8 +145,12 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
         if (isAuthor) {
           actions.add(IconButton(
             icon: const Icon(Icons.edit),
-            onPressed: () {
-              context.push('/edit_events/${event.id}/${event.title}');
+            onPressed: () async {
+              final result = await context
+                  .push<bool>('/edit_events/${event.id}/${event.title}');
+              if (result != null) {
+                await loadState();
+              }
             },
           ));
         }
@@ -218,24 +222,21 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Participants : ${participantsIds.length}/${event
-                              .maxParticipationNumber}',
+                          'Participants : ${participantsIds.length}/${event.maxParticipationNumber}',
                           style: const TextStyle(
                             fontWeight: FontWeight.w300,
                             fontSize: 15,
                           ),
                         ),
                         Text(
-                          'Date : ${DateFormat.yMd().add_jm().format(
-                              event.date)}',
+                          'Date : ${DateFormat.yMd().add_jm().format(event.date)}',
                           style: const TextStyle(
                             fontWeight: FontWeight.w300,
                             fontSize: 15,
                           ),
                         ),
                         Text(
-                          'Auteur : ${event.author.lastname} ${event.author
-                              .firstname}',
+                          'Auteur : ${event.author.lastname} ${event.author.firstname}',
                           style: const TextStyle(
                             fontWeight: FontWeight.w300,
                             fontSize: 15,
@@ -284,9 +285,9 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                           children: [
                             TileLayer(
                               urlTemplate:
-                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                               userAgentPackageName:
-                              'dev.fleaflet.flutter_map.example',
+                                  'dev.fleaflet.flutter_map.example',
                             ),
                             MarkerLayer(
                               markers: [
@@ -294,9 +295,9 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                                   width: 80,
                                   height: 80,
                                   point:
-                                  LatLng(event.latitude, event.longitude),
+                                      LatLng(event.latitude, event.longitude),
                                   builder: (ctx) =>
-                                  const Icon(Icons.location_pin),
+                                      const Icon(Icons.location_pin),
                                 ),
                               ],
                             ),
@@ -307,27 +308,27 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
           ),
           floatingActionButton: showJoinButton()
               ? ElevatedButton(
-              onPressed: () async {
-                await changeParticipationStatus(currentUserId);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: green,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                padding: const EdgeInsets.symmetric(
-                    vertical: 16, horizontal: 20),
-              ),
-              child: Text(
-                isParticipating ? 'Leave' : 'Join',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400,
-                ),
-              ))
+                  onPressed: () async {
+                    await changeParticipationStatus(currentUserId);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 20),
+                  ),
+                  child: Text(
+                    isParticipating ? 'Leave' : 'Join',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ))
               : null,
           floatingActionButtonLocation:
-          FloatingActionButtonLocation.centerFloat,
+              FloatingActionButtonLocation.centerFloat,
         );
       },
     );

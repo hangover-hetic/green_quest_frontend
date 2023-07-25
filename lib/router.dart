@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/screens/Events/edit_event.dart';
 import 'package:green_quest_frontend/screens/Events/postEvent_api.dart';
+import 'package:green_quest_frontend/screens/error_screen.dart';
 import 'package:green_quest_frontend/screens/event_details.dart';
 import 'package:green_quest_frontend/screens/feed/post_list/components/feed_post_create.dart';
 import 'package:green_quest_frontend/screens/feed/post_list/posts_list.dart';
@@ -16,6 +17,7 @@ import 'package:green_quest_frontend/utils/preferences.dart';
 
 // GoRouter configuration
 final GoRouter router = GoRouter(
+  errorBuilder: (context, state) => ErrorScreen(error: state.error),
   routes: <RouteBase>[
     GoRoute(
       path: '/',

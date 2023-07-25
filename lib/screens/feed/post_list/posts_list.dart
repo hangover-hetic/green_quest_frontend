@@ -81,15 +81,16 @@ class FeedPostListScreenState extends State<FeedPostListScreen> {
               },
             ),
             floatingActionButton: GqButton(
-              onPressed: () {
+              onPressed: () async {
                 final feedId = widget.feedId;
-                context.pushNamed(
+                final result = await context.pushNamed<bool>(
                   'feed_create_post',
                   params: {
                     'feedId': feedId.toString(),
                     'eventId': widget.eventId.toString()
                   },
                 );
+                if (result == true) loadPosts();
               },
               text: 'Ajouter un post',
             ),

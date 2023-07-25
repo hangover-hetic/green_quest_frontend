@@ -92,7 +92,12 @@ class ApiService {
         throw Exception('Pas trouvé');
       case 401:
         debugPrint(jsonEncode(body));
+        if (body['message'] == 'Expired JWT Token' ||
+            body['message'] == 'JWT Token not found') {
+          setToken('');
+        }
         throw Exception(body['detail'] ?? 'Non autorisé');
+
       default:
         debugPrint(jsonEncode(body));
         throw Exception(
@@ -378,5 +383,20 @@ class ApiService {
         );
       },
     );
+  }
+
+  static Future<Map<String, dynamic>?> put(
+      String url, Map<String, dynamic> body) async {
+    try {
+      final uri = ApiService.getUrl(url);
+      print('put to $uri');
+      final headers = await ApiService.getHeaders();
+      final response =
+          await http.put(uri, headers: headers, body: json.encode(body));
+      return ApiService.handleResponse(response);
+    } on Exception catch (e) {
+      ApiService.processError(url, e);
+    }
+    return null;
   }
 }

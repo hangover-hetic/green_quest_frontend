@@ -2,14 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:go_router/go_router.dart';
-import 'package:green_quest_frontend/api/events_service.dart';
 import 'package:green_quest_frontend/api/models/main.dart';
-import 'package:green_quest_frontend/style/colors.dart';
+import 'package:green_quest_frontend/widgets/date_input.dart';
 import 'package:green_quest_frontend/widgets/gq_page_scaffold.dart';
 import 'package:green_quest_frontend/widgets/img_picker.dart';
-import 'package:intl/intl.dart';
 
 import '../../api/service.dart';
 import '../../widgets/gq_button.dart';
@@ -107,6 +104,9 @@ class CreateEventState extends State<CreateEvent> {
                   decoration: const InputDecoration(
                     labelText: 'Description',
                   ),
+                  minLines: 6,
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
                   controller: _descriptionTEC,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -123,7 +123,6 @@ class CreateEventState extends State<CreateEvent> {
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (v) {
                     setState(() {
-                      print('cucou $v');
                       maxParticipationNumber = int.parse(v);
                     });
                   },
@@ -134,29 +133,13 @@ class CreateEventState extends State<CreateEvent> {
                     return null;
                   },
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Date: ${DateFormat.yMd().add_jm().format(date)}',
-                          style: const TextStyle(fontSize: 17, color: green)),
-                      IconButton(
-                          onPressed: () {
-                            DatePicker.showDatePicker(context,
-                                minTime: DateTime.now(),
-                                maxTime:
-                                    DateTime.now().add(Duration(days: 365)),
-                                onConfirm: (date) {
-                              setState(() {
-                                this.date = date;
-                              });
-                            }, currentTime: DateTime.now());
-                          },
-                          icon: const Icon(Icons.calendar_today)),
-                    ],
-                  ),
-                ),
+                DateInput(
+                    date: date,
+                    onChanged: (date) {
+                      setState(() {
+                        this.date = date;
+                      });
+                    }),
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Latitude',
