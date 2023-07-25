@@ -19,12 +19,6 @@ class EventsServiceApi {
     return events;
   }
 
-  static Future<void> postEvent(Map<String, String> data, File coverFile,
-      void Function(dynamic) callback) async {
-    await ApiService.makeMultipartRequest(
-        'api/events', data, {'coverFile': coverFile}, callback);
-  }
-
   static Future<List<Event>> updateEvent(data, id) async {
     try {
       final url = Uri.parse('${ApiConstants.greenQuest}api/events/$id');

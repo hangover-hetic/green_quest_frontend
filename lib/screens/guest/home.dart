@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/screens/guest/login.dart';
 import 'package:green_quest_frontend/screens/guest/register.dart';
 
@@ -32,7 +33,7 @@ class HomeScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const Text(
-                    'Let’s change together',
+                    'Green Quest',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -41,7 +42,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   const Text(
-                    'Are you ready to change the world, one street at a time? Sign up for our volunteer cleanup events app !',
+                    'Êtes-vous prêts à changer le monde rue par rue ? Inscrivez-vous ou connectez-vous pour commencer !',
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.white,
@@ -53,14 +54,10 @@ class HomeScreen extends StatelessWidget {
                       backgroundColor: Colors.white,
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginForm()),
-                      );
+                      context.push('/login');
                     },
                     child: const Text(
-                      'Log in',
+                      'Se connecter',
                       style: TextStyle(
                         color: Color(0xff0C6863),
                       ),
@@ -77,14 +74,10 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const RegisterForm()),
-                      );
+                      context.push('/register');
                     },
                     child: const Text(
-                      'Sign up',
+                      "S'inscrire",
                       style: TextStyle(
                         color: Colors.white,
                       ),

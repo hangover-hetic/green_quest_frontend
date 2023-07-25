@@ -22,7 +22,7 @@ final GoRouter router = GoRouter(
       redirect: (BuildContext context, GoRouterState state) async {
         final token = await getToken();
         debugPrint('token: $token');
-        if (token != null) {
+        if (token != null && token.isNotEmpty) {
           return '/map';
         }
         return null;

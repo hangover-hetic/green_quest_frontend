@@ -1,6 +1,7 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:green_quest_frontend/utils/preferences.dart';
 
 class MenuButtonWidget extends StatefulWidget {
   const MenuButtonWidget({super.key});
@@ -68,11 +69,12 @@ class MenuItem {
 }
 
 class MenuItems {
-  static const List<MenuItem> firstItems = [ranking, shop, settings];
+  static const List<MenuItem> firstItems = [ranking, shop, settings, logout];
 
   static const ranking = MenuItem(text: '', icon: Icons.spa_outlined);
   static const shop = MenuItem(text: '', icon: Icons.shopping_cart_outlined);
   static const settings = MenuItem(text: '', icon: Icons.settings_outlined);
+  static const logout = MenuItem(text: '', icon: Icons.logout);
 
   static Widget buildItem(MenuItem item) {
     return Row(
@@ -95,6 +97,10 @@ class MenuItems {
         break;
       case MenuItems.settings:
         context.go('/settings');
+        break;
+      case MenuItems.logout:
+        setToken('');
+        context.go('/login');
         break;
     }
   }

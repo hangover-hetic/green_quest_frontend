@@ -50,7 +50,7 @@ class EventListScrollWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: const <Widget>[
                 Text(
-                  'Explore Pittsburgh',
+                  'Événements',
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
                     fontSize: 24,

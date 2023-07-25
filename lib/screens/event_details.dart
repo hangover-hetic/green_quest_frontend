@@ -10,6 +10,7 @@ import 'package:green_quest_frontend/api/utils.dart';
 import 'package:green_quest_frontend/style/colors.dart';
 import 'package:green_quest_frontend/utils/preferences.dart';
 import 'package:green_quest_frontend/widgets/loading_view.dart';
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,9 +28,10 @@ class EventdetailsScreen extends StatefulWidget {
 class _EventdetailsScreenState extends State<EventdetailsScreen> {
   late Event event;
   bool isParticipating = false;
+  bool isAuthor = false;
   late Future<void> loadingState;
   int participationId = 0;
-  List<dynamic> participantsIds = [];
+  List<int> participantsIds = [];
   int currentUserId = 0;
 
   @override
@@ -44,25 +46,29 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
     if (user == null) {
       throw Exception('User not found');
     }
+    final participations = event.participations;
 
     setState(() {
       currentUserId = user.id;
-
-      participantsIds = event.participants
-          .map((e) => extractIdFromUrl((e['userId'] ?? '') as String))
-          .toList();
+      isAuthor = user.id == event.author.id;
     });
 
-    if (event.participants.isEmpty) {
-      return;
-    }
-    for (final participation in event.participants) {
-      if (extractIdFromUrl((participation['userId'] ?? '') as String) ==
-          currentUserId.toString()) {
-        setState(() {
-          participationId = participation['id'] as int;
-          isParticipating = true;
-        });
+    if (participations != null) {
+      setState(() {
+        participantsIds = participations.map((e) => e.userId.id).toList();
+      });
+
+      if (event.participantsNumber == 0) {
+        return;
+      }
+
+      for (final participation in participations) {
+        if (participation.userId.id == currentUserId) {
+          setState(() {
+            participationId = participation.id;
+            isParticipating = true;
+          });
+        }
       }
     }
   }
@@ -81,25 +87,38 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
       setState(() {
         participationId = result['id'] as int;
         isParticipating = true;
-        participantsIds.add('$currentUser');
+        participantsIds = [...participantsIds, currentUser];
       });
       showSuccessToast('Vous participez à cet événement');
       return;
     }
+
     final result =
-        await ApiService.delete('api/participations/$participationId');
+    await ApiService.delete('api/participations/$participationId');
     if (result == null || result == false) {
       return;
     }
-    final filteredParticipantsIds = participantsIds
-        .where((element) => element != currentUserId.toString())
-        .toList();
+    final filteredParticipantsIds =
+    participantsIds.where((element) => element != currentUserId).toList();
     setState(() {
       participationId = 0;
       isParticipating = false;
       participantsIds = filteredParticipantsIds;
     });
     showSuccessToast('Vous ne participez plus à cet événement');
+  }
+
+  bool showJoinButton() {
+    if (isAuthor) {
+      return false;
+    }
+    if (isParticipating) {
+      return true;
+    }
+    if (participantsIds.length >= event.maxParticipationNumber) {
+      return false;
+    }
+    return true;
   }
 
   @override
@@ -115,6 +134,23 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
         }
         final coverUrl = event.coverUrl;
 
+        final actions = <Widget>[
+          IconButton(
+            icon: const Icon(Icons.rss_feed),
+            onPressed: () {
+              context.push('/feed/${event.id}/${event.feedId}/${event.title}');
+            },
+          )
+        ];
+        if (isAuthor) {
+          actions.add(IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              context.push('/edit_events/${event.id}/${event.title}');
+            },
+          ));
+        }
+
         return Scaffold(
           appBar: AppBar(
             title: Text(event.title),
@@ -125,39 +161,87 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
               },
             ),
             backgroundColor: green,
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.rss_feed),
-                onPressed: () {
-                  context
-                      .push('/feed/${event.id}/${event.feedId}/${event.title}');
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: () {
-                  context.push('/edit_events/${event.id}/${event.title}');
-                },
-              ),
-            ],
+            actions: actions,
           ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (coverUrl != null)
-                Image.network(
-                  coverUrl,
-                  width: double.infinity,
-                  height: 200,
-                  fit: BoxFit.cover,
-                )
-              else
-                ColoredBox(
-                    color: Colors.grey.shade300,
-                    child: const SizedBox(
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  if (coverUrl != null)
+                    Image.network(
+                      coverUrl,
                       width: double.infinity,
                       height: 200,
-                    )),
+                      fit: BoxFit.cover,
+                    )
+                  else
+                    ColoredBox(
+                        color: Colors.grey.shade300,
+                        child: const SizedBox(
+                          width: double.infinity,
+                          height: 200,
+                        )),
+                  Positioned(
+                    top: 183,
+                    right: 20,
+                    child: Container(
+                      alignment: Alignment.bottomRight,
+                      decoration: ShapeDecoration(
+                        color: green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                      ),
+                      child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.water_drop, color: Colors.white),
+                              Text(
+                                "1500",
+                                style: TextStyle(color: Colors.white),
+                              )
+                            ],
+                          )),
+                    ),
+                  )
+                ],
+              ),
+              Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Participants : ${participantsIds.length}/${event
+                              .maxParticipationNumber}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 15,
+                          ),
+                        ),
+                        Text(
+                          'Date : ${DateFormat.yMd().add_jm().format(
+                              event.date)}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 15,
+                          ),
+                        ),
+                        Text(
+                          'Auteur : ${event.author.lastname} ${event.author
+                              .firstname}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 15,
+                          ),
+                        )
+                      ])),
               Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(
@@ -177,34 +261,52 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 200,
-                child: FlutterMap(
-                  options: MapOptions(
-                    center: LatLng(event.latitude, event.longitude),
-                  ),
-                  children: [
-                    TileLayer(
-                      urlTemplate:
-                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      userAgentPackageName: 'dev.fleaflet.flutter_map.example',
-                    ),
-                    MarkerLayer(
-                      markers: [
-                        Marker(
-                          width: 80,
-                          height: 80,
-                          point: LatLng(event.latitude, event.longitude),
-                          builder: (ctx) => const Icon(Icons.location_pin),
+              Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Container(
+                      height: 200,
+                      decoration: const BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0x19000000),
+                            blurRadius: 10,
+                            offset: Offset(0, 4),
+                            spreadRadius: 0,
+                          )
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: FlutterMap(
+                          options: MapOptions(
+                            center: LatLng(event.latitude, event.longitude),
+                          ),
+                          children: [
+                            TileLayer(
+                              urlTemplate:
+                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                              userAgentPackageName:
+                              'dev.fleaflet.flutter_map.example',
+                            ),
+                            MarkerLayer(
+                              markers: [
+                                Marker(
+                                  width: 80,
+                                  height: 80,
+                                  point:
+                                  LatLng(event.latitude, event.longitude),
+                                  builder: (ctx) =>
+                                  const Icon(Icons.location_pin),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+                      ))),
             ],
           ),
-          floatingActionButton: ElevatedButton(
+          floatingActionButton: showJoinButton()
+              ? ElevatedButton(
               onPressed: () async {
                 await changeParticipationStatus(currentUserId);
               },
@@ -213,8 +315,8 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 16, horizontal: 20),
               ),
               child: Text(
                 isParticipating ? 'Leave' : 'Join',
@@ -222,9 +324,10 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                   fontSize: 18,
                   fontWeight: FontWeight.w400,
                 ),
-              )),
+              ))
+              : null,
           floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
+          FloatingActionButtonLocation.centerFloat,
         );
       },
     );
