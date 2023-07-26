@@ -24,7 +24,7 @@ class LoginScreen extends State<LoginForm> {
     final email = _emailController.text;
     final password = _passwordController.text;
 
-    final tokenResponse = await ApiService.post('api/login_check', {
+    final tokenResponse = await post('api/login_check', {
       'username': email,
       'password': password,
     });
@@ -39,7 +39,7 @@ class LoginScreen extends State<LoginForm> {
     final token = tokenResponse['token'] as String;
     await setToken(token);
 
-    final userInfo = await ApiService.get('api/me');
+    final userInfo = await get<Map<String, dynamic>>('api/me');
     if (userInfo == null) {
       setState(() {
         _errorMessage = 'Identifiants incorrects';

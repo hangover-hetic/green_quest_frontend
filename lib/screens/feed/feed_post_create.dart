@@ -45,7 +45,7 @@ class FeedPostCreateScreenState extends State<FeedPostCreateScreen> {
       showErrorToast('Veuillez ajouter une image');
       return;
     }
-    await ApiService.multipart('api/feed_posts', {
+    await multipart('api/feed_posts', {
       'title': title,
       'content': content,
       'feed': '/api/feeds/${widget.feedId}',

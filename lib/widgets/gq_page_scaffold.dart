@@ -31,7 +31,7 @@ class GqPageScaffold extends StatelessWidget {
         ),
         elevation: 0,
       ),
-      body: body,
+      body: SingleChildScrollView(child: body),
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

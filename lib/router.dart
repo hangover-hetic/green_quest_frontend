@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:green_quest_frontend/screens/Events/edit_event.dart';
-import 'package:green_quest_frontend/screens/Events/postEvent_api.dart';
 import 'package:green_quest_frontend/screens/error_screen.dart';
-import 'package:green_quest_frontend/screens/event_details.dart';
-import 'package:green_quest_frontend/screens/feed/post_list/components/feed_post_create.dart';
-import 'package:green_quest_frontend/screens/feed/post_list/posts_list.dart';
-import 'package:green_quest_frontend/screens/guest/home.dart';
-import 'package:green_quest_frontend/screens/guest/login.dart';
-import 'package:green_quest_frontend/screens/guest/register.dart';
-import 'package:green_quest_frontend/screens/map_screen.dart';
+import 'package:green_quest_frontend/screens/event/create_event_screen.dart';
+import 'package:green_quest_frontend/screens/event/edit_event_screen.dart';
+import 'package:green_quest_frontend/screens/event_details_screen.dart';
+import 'package:green_quest_frontend/screens/feed/feed_post_create.dart';
+import 'package:green_quest_frontend/screens/feed/posts_list_screen.dart';
+import 'package:green_quest_frontend/screens/guest/home_screen.dart';
+import 'package:green_quest_frontend/screens/guest/login_screen.dart';
+import 'package:green_quest_frontend/screens/guest/register_screen.dart';
+import 'package:green_quest_frontend/screens/map/map_screen.dart';
 import 'package:green_quest_frontend/screens/ranking_screen.dart';
 import 'package:green_quest_frontend/screens/settings_screen.dart';
 import 'package:green_quest_frontend/screens/shop_screen.dart';
@@ -113,8 +113,9 @@ final GoRouter router = GoRouter(
         final feedId = state.params['feedId'];
         final eventId = state.params['eventId'];
         final eventName = state.params['eventName'];
-        if (feedId == null || eventId == null || eventName == null)
+        if (feedId == null || eventId == null || eventName == null) {
           return const SizedBox();
+        }
         return FeedPostListScreen(
           feedId: int.parse(feedId),
           eventId: int.parse(eventId),

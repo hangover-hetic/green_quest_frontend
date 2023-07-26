@@ -3,13 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
+import 'package:green_quest_frontend/api/event_service.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
-import 'package:green_quest_frontend/api/service.dart';
+import 'package:green_quest_frontend/screens/map/widgets/event_list_scroll.dart';
+import 'package:green_quest_frontend/screens/map/widgets/home_menu.dart';
+import 'package:green_quest_frontend/screens/map/widgets/map.dart';
 import 'package:green_quest_frontend/style/colors.dart';
-import 'package:green_quest_frontend/widgets/Menu_button.dart';
-import 'package:green_quest_frontend/widgets/event_list_scroll.dart';
 import 'package:green_quest_frontend/widgets/loading_view.dart';
-import 'package:green_quest_frontend/widgets/map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:sliding_up_panel2/sliding_up_panel2.dart';
@@ -41,7 +41,7 @@ class _MapScreenState extends State<MapScreen> {
     _mapController = MapController();
     _fabHeight = _initFabHeight;
     initLocationService();
-    events = ApiService.getListEvents();
+    events = getEventList();
   }
 
   Future<void> initLocationService() async {
@@ -115,97 +115,108 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     _panelHeightOpen = MediaQuery.of(context).size.height * .90;
-    LatLng currentLatLng;
 
     if (_currentLocation == null) {
+      print("current location is null");
       return const LoadingViewWidget();
     }
-    currentLatLng =
-        LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!);
 
     return Material(
       child: Stack(
         alignment: Alignment.topCenter,
-        children: <Widget>[
-          SlidingUpPanel(
-            maxHeight: _panelHeightOpen,
-            minHeight: _panelHeightClosed,
-            parallaxEnabled: true,
-            parallaxOffset: .5,
-            backdropEnabled: true,
-            isDraggable: !_isPanelOpen,
-            body: MapWithEventMarkers(
-              currentLatLng: currentLatLng,
-              events: events,
-              mapController: _mapController,
-            ),
-            panelBuilder: () => EventListScrollWidget(
-              scrollController: ScrollController(),
-              canScroll: _isPanelOpen,
-              events: events,
-              currentLatLng: currentLatLng,
-            ),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(18),
-              topRight: Radius.circular(18),
-            ),
-            onPanelSlide: (double pos) => setState(() {
-              _fabHeight = pos * (_panelHeightOpen - _panelHeightClosed) +
-                  _initFabHeight;
-            }),
-            onPanelOpened: () => setState(() {
-              _isPanelOpen = true;
-            }),
-            onPanelClosed: () => setState(() {
-              _isPanelOpen = false;
-            }),
-          ),
-          // the fab
-          Positioned(
-              right: 20,
-              bottom: _fabHeight,
-              child: Column(children: [
-                FloatingActionButton(
-                  onPressed: () => context.go('/create_event'),
-                  backgroundColor: green,
-                  child: const Icon(Icons.add),
-                ),
-                const SizedBox(height: 10),
-                FloatingActionButton(
-                  backgroundColor: green,
-                  onPressed: () {
-                    setState(() {
-                      _liveUpdate = !_liveUpdate;
-
-                      if (_liveUpdate) {
-                        interActiveFlags = InteractiveFlag.rotate |
-                            InteractiveFlag.pinchZoom |
-                            InteractiveFlag.doubleTapZoom;
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'In live update mode only zoom and rotation are enable',
-                            ),
-                          ),
-                        );
-                      } else {
-                        interActiveFlags = InteractiveFlag.all;
-                      }
-                    });
-                  },
-                  child: _liveUpdate
-                      ? const Icon(Icons.gps_fixed)
-                      : const Icon(Icons.gps_not_fixed),
-                ),
-              ])),
-          const Positioned(
-            left: 20,
-            top: 40,
-            child: MenuButtonWidget(),
-          ),
-        ],
+        children: map(),
       ),
     );
+  }
+
+  List<Widget> map() {
+    LatLng currentLatLng;
+
+    currentLatLng =
+        LatLng(_currentLocation!.latitude!, _currentLocation!.longitude!);
+
+    return [
+      SlidingUpPanel(
+        maxHeight: _panelHeightOpen,
+        minHeight: _panelHeightClosed,
+        parallaxEnabled: true,
+        parallaxOffset: .5,
+        backdropEnabled: true,
+        isDraggable: !_isPanelOpen,
+        body: MapWithEventMarkers(
+          currentLatLng: currentLatLng,
+          events: events,
+          mapController: _mapController,
+        ),
+        panelBuilder: () => EventListScrollWidget(
+          scrollController: ScrollController(),
+          canScroll: _isPanelOpen,
+          events: events,
+          currentLatLng: currentLatLng,
+        ),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(18),
+          topRight: Radius.circular(18),
+        ),
+        onPanelSlide: (double pos) => setState(() {
+          _fabHeight =
+              pos * (_panelHeightOpen - _panelHeightClosed) + _initFabHeight;
+        }),
+        onPanelOpened: () => setState(() {
+          _isPanelOpen = true;
+        }),
+        onPanelClosed: () => setState(() {
+          _isPanelOpen = false;
+        }),
+      ),
+      // the fab
+      Positioned(
+          right: 20,
+          bottom: _fabHeight,
+          child: Column(children: [
+            FloatingActionButton(
+              heroTag: 'createEvent',
+              onPressed: () => context.go('/create_event'),
+              backgroundColor: green,
+              child: const Icon(Icons.add),
+            ),
+            const SizedBox(height: 10),
+            FloatingActionButton(
+              heroTag: 'liveUpdate',
+              backgroundColor: green,
+              onPressed: () {
+                if (context.mounted) {
+                  setState(() {
+                    _liveUpdate = !_liveUpdate;
+
+                    if (_liveUpdate) {
+                      interActiveFlags = InteractiveFlag.rotate |
+                          InteractiveFlag.pinchZoom |
+                          InteractiveFlag.doubleTapZoom;
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'In live update mode only zoom and rotation are enable',
+                          ),
+                        ),
+                      );
+                    } else {
+                      interActiveFlags = InteractiveFlag.all;
+                    }
+                  });
+                }
+              },
+              child: _liveUpdate
+                  ? const Icon(Icons.gps_fixed)
+                  : const Icon(Icons.gps_not_fixed),
+            ),
+          ])),
+      const Positioned(
+        left: 20,
+        top: 40,
+        child: MenuButtonWidget(),
+      )
+    ];
   }
 }

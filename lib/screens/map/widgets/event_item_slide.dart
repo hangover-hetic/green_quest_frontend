@@ -5,7 +5,7 @@ import 'package:green_quest_frontend/style/colors.dart';
 import 'package:green_quest_frontend/widgets/icon_text.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../utils/date.dart';
+import '../../../utils/date.dart';
 
 class EventItemSlideWidget extends StatefulWidget {
   const EventItemSlideWidget({
