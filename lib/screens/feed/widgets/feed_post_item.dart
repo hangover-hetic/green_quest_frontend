@@ -28,6 +28,7 @@ class FeedPostWidget extends StatelessWidget {
             topRight: Radius.circular(10),
           ),
           child: FadeInImage.memoryNetwork(
+            height: 200,
             placeholder: kTransparentImage,
             image: imageUrl,
             fit: BoxFit.fitWidth,

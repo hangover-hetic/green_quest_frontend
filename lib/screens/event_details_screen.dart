@@ -14,6 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../api/event_service.dart';
 import '../utils/toast.dart';
 
 class EventdetailsScreen extends StatefulWidget {
@@ -41,7 +42,7 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
   }
 
   Future<void> loadState() async {
-    event = await ApiService.getEvent(widget.eventId);
+    event = await getEvent(widget.eventId);
     final user = await getUser();
     if (user == null) {
       throw Exception('User not found');
@@ -77,7 +78,7 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
     final e = event;
     if (!isParticipating) {
       final eventId = e.id;
-      final result = await ApiService.post('api/participations', {
+      final result = await post('api/participations', {
         'event': '/api/events/$eventId',
         'userId': '/api/users/$currentUser'
       });
@@ -93,8 +94,7 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
       return;
     }
 
-    final result =
-        await ApiService.delete('api/participations/$participationId');
+    final result = await delete('api/participations/$participationId');
     if (result == null || result == false) {
       return;
     }
@@ -198,13 +198,13 @@ class _EventdetailsScreenState extends State<EventdetailsScreen> {
                           borderRadius: BorderRadius.circular(25),
                         ),
                       ),
-                      child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
+                      child: const Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
+                            children: [
                               Icon(Icons.water_drop, color: Colors.white),
                               Text(
                                 "1500",

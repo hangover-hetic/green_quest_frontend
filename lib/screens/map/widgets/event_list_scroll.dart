@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:green_quest_frontend/api/models/event.dart';
 import 'package:green_quest_frontend/style/colors.dart';
-import 'package:green_quest_frontend/widgets/event_item_slide.dart';
+import 'package:green_quest_frontend/screens/map/widgets/event_item_slide.dart';
 import 'package:latlong2/latlong.dart';
 
 class EventListScrollWidget extends StatelessWidget {

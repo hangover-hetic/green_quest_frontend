@@ -3,13 +3,12 @@ import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/api/models/main.dart';
 import 'package:green_quest_frontend/api/service.dart';
 
-import 'package:green_quest_frontend/screens/feed/post_list/components/feed_post_item.dart';
-import 'package:green_quest_frontend/style/colors.dart';
 import 'package:green_quest_frontend/widgets/gq_button.dart';
 import 'package:green_quest_frontend/widgets/gq_page_scaffold.dart';
 import 'package:intl/intl.dart';
 
-import '../../../widgets/loading_view.dart';
+import '../../widgets/loading_view.dart';
+import './widgets/feed_post_item.dart';
 
 class FeedPostListScreen extends StatefulWidget {
   const FeedPostListScreen({
@@ -36,9 +35,19 @@ class FeedPostListScreenState extends State<FeedPostListScreen> {
     loadPosts();
   }
 
+  Future<List<FeedPost>> getFeedPost() async {
+    final result =
+        await get<Map<String, dynamic>>('api/feeds/${widget.feedId}');
+    if (result == null) return [];
+    final l = result['posts'] as List<dynamic>;
+    return List<FeedPost>.from(
+      l.map((m) => FeedPost.fromJson(m as Map<String, dynamic>)),
+    );
+  }
+
   void loadPosts() {
     setState(() {
-      posts = ApiService.getFeedPost(widget.feedId);
+      posts = getFeedPost();
     });
   }
 

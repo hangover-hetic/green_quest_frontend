@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:green_quest_frontend/screens/guest/login.dart';
-import 'package:green_quest_frontend/screens/guest/register.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

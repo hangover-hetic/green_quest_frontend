@@ -6,6 +6,7 @@ import 'package:green_quest_frontend/widgets/date_input.dart';
 import 'package:green_quest_frontend/widgets/gq_button.dart';
 import 'package:green_quest_frontend/widgets/gq_page_scaffold.dart';
 
+import '../../api/event_service.dart';
 import '../../widgets/loading_view.dart';
 
 final _formKey = GlobalKey<FormState>();
@@ -40,7 +41,7 @@ class EditEventState extends State<EditEvent> {
   }
 
   Future<void> loadEvent() async {
-    var event = await ApiService.getEvent(widget.eventId);
+    var event = await getEvent(widget.eventId);
     _titleController.value = TextEditingValue(text: event.title);
     _descriptionController.value = TextEditingValue(text: event.description);
     _longitudeController.value =
@@ -69,7 +70,7 @@ class EditEventState extends State<EditEvent> {
       'maxParticipationNumber': maxParticipationNumber,
     };
 
-    await ApiService.put('api/events/${widget.eventId}', data);
+    await put('api/events/${widget.eventId}', data);
     if (context.mounted) context.pop(true);
   }
 

@@ -3,10 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/api/service.dart';
-import 'package:green_quest_frontend/screens/guest/login.dart';
+import 'package:green_quest_frontend/screens/guest/login_screen.dart';
 
 //import appbar.dart
 import 'package:green_quest_frontend/screens/guest/widget/appbar.dart';
+import 'package:green_quest_frontend/utils/toast.dart';
 import 'package:green_quest_frontend/widgets/gq_button.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,16 +33,16 @@ class RegisterScreen extends State<RegisterForm> {
     final firstname = _firstnameController.text;
     final lastname = _lastnameController.text;
 
-    await ApiService.RegisterUser(
-      context: context,
-      email: email,
-      password: password,
-      firstname: firstname,
-      lastname: lastname,
-      exp: 0,
-      blobs: 0,
-      userIdentifier: email,
-    );
+    await post('api/users', {
+      'email': email,
+      'password': password,
+      'firstname': firstname,
+      'lastname': lastname,
+      'exp': 0,
+      'blobs': 0,
+      'userIdentifier': email
+    });
+    showSuccessToast('Votre inscription a été effectuée avec succès');
     if (context.mounted) context.go('/login');
   }
 
