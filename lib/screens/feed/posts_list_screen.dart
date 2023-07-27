@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:green_quest_frontend/api/models/main.dart';
 import 'package:green_quest_frontend/api/service.dart';
-
+import 'package:green_quest_frontend/screens/feed/widgets/feed_post_item.dart';
 import 'package:green_quest_frontend/widgets/gq_button.dart';
 import 'package:green_quest_frontend/widgets/gq_page_scaffold.dart';
+import 'package:green_quest_frontend/widgets/loading_view.dart';
 import 'package:intl/intl.dart';
-
-import '../../widgets/loading_view.dart';
-import './widgets/feed_post_item.dart';
 
 class FeedPostListScreen extends StatefulWidget {
   const FeedPostListScreen({
@@ -58,33 +56,33 @@ class FeedPostListScreenState extends State<FeedPostListScreen> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return GqPageScaffold(
+            scrollContainer: false,
             onBack: () {
               context.pop();
             },
             body: RefreshIndicator(
-              child: ListView(
-                children: snapshot.data!
-                    .map(
-                      (post) => Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            FeedPostWidget(
-                              title: post.title,
-                              content: post.content,
-                              coverUrl: post.coverUrl,
-                              authorName:
-                                  '${post.author.firstname} ${post.author.lastname}',
-                              createdAt:
-                                  DateFormat.yMd().format(post.createdAt),
-                            ),
-                          ],
+              child: ListView(children: [
+                ...snapshot.data!.map(
+                  (post) => Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FeedPostWidget(
+                          title: post.title,
+                          content: post.content,
+                          coverUrl: post.coverUrl,
+                          authorName:
+                              '@${post.author.firstname} ${post.author.lastname}',
+                          createdAt: DateFormat.yMd().format(post.createdAt),
                         ),
-                      ),
-                    )
-                    .toList(),
-              ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 100)
+              ]),
               onRefresh: () async {
                 loadPosts();
               },

@@ -9,6 +9,7 @@ import 'package:green_quest_frontend/screens/guest/login_screen.dart';
 import 'package:green_quest_frontend/screens/guest/widget/appbar.dart';
 import 'package:green_quest_frontend/utils/toast.dart';
 import 'package:green_quest_frontend/widgets/gq_button.dart';
+import 'package:green_quest_frontend/widgets/gq_page_scaffold.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -50,10 +51,8 @@ class RegisterScreen extends State<RegisterForm> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      appBar: const CustomAppBar(
-        key: Key('loginAppBar'),
-      ),
+    return GqPageScaffold(
+      title: "S'inscrire",
       body: Column(
         children: [
           SizedBox(
@@ -68,69 +67,69 @@ class RegisterScreen extends State<RegisterForm> {
               width: double.infinity,
             ),
           ),
-          Expanded(
-            child: Container(
-              // Ajout de la couleur d'arrière-plan
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text(
-                    'Créer un compte',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xff0E756E),
-                    ),
+          Container(
+            // Ajout de la couleur d'arrière-plan
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Créer un compte',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff0E756E),
                   ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: _firstnameController,
-                          decoration:
-                              const InputDecoration(labelText: 'Prénom'),
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.all(0),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _firstnameController,
+                        decoration: const InputDecoration(labelText: 'Prénom'),
+                      ),
+                      TextFormField(
+                        controller: _lastnameController,
+                        decoration: const InputDecoration(labelText: 'Nom'),
+                      ),
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(
+                          labelText: 'Email',
                         ),
-                        TextFormField(
-                          controller: _lastnameController,
-                          decoration: const InputDecoration(labelText: 'Nom'),
+                      ),
+                      TextFormField(
+                        controller: _passwordController,
+                        decoration:
+                            const InputDecoration(labelText: 'Mot de passe'),
+                        obscureText: true,
+                      ),
+                      const SizedBox(height: 16),
+                      GqButton(
+                        onPressed: _register,
+                        text: "S'inscrire",
+                      ),
+                      Text(
+                        _errorMessage == '' ? _valid : _errorMessage,
+                        //faire un terner pour afficher en rouge si erreur et en vert si valid
+                        style: TextStyle(
+                          color:
+                              _errorMessage == '' ? Colors.green : Colors.red,
                         ),
-                        TextFormField(
-                          controller: _emailController,
-                          decoration: const InputDecoration(
-                            labelText: 'Email',
-                          ),
-                        ),
-                        TextFormField(
-                          controller: _passwordController,
-                          decoration:
-                              const InputDecoration(labelText: 'Mot de passe'),
-                          obscureText: true,
-                        ),
-                        const SizedBox(height: 16),
-                        GqButton(
-                          onPressed: _register,
-                          text: "S'inscrire",
-                        ),
-                        Text(
-                          _errorMessage == '' ? _valid : _errorMessage,
-                          //faire un terner pour afficher en rouge si erreur et en vert si valid
-                          style: TextStyle(
-                            color:
-                                _errorMessage == '' ? Colors.green : Colors.red,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
       ),
+      onBack: () {
+        context.pop();
+      },
     );
   }
 }

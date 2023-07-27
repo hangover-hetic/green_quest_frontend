@@ -7,6 +7,7 @@ import 'package:green_quest_frontend/style/colors.dart';
 import 'package:green_quest_frontend/utils/preferences.dart';
 import 'package:green_quest_frontend/screens/guest/widget/appbar.dart';
 import 'package:green_quest_frontend/widgets/gq_button.dart';
+import 'package:green_quest_frontend/widgets/gq_page_scaffold.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -55,10 +56,11 @@ class LoginScreen extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(
-        key: Key('loginAppBar'),
-      ),
+    return GqPageScaffold(
+      title: 'Se connecter',
+      onBack: () {
+        context.go('/');
+      },
       body: Column(
         children: [
           SizedBox(
@@ -73,62 +75,59 @@ class LoginScreen extends State<LoginForm> {
               width: double.infinity,
             ),
           ),
-          Expanded(
-            child: Container(
-              // Ajout de la couleur d'arrière-plan
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text(
-                    'Bienvenue !',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xff0E756E),
-                    ),
+          Container(
+            // Ajout de la couleur d'arrière-plan
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Bienvenue !',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff0E756E),
                   ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: _emailController,
-                          decoration: const InputDecoration(
-                            labelText: 'Email',
-                            prefixIcon:
-                                Icon(Icons.email_outlined, color: green),
-                          ),
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.all(0),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(
+                          labelText: 'Email',
+                          prefixIcon: Icon(Icons.email_outlined, color: green),
                         ),
-                        TextFormField(
-                          controller: _passwordController,
-                          decoration: const InputDecoration(
-                              labelText: 'Mot de passe',
-                              prefixIcon: Icon(
-                                Icons.lock_outline,
-                                color: green,
-                              )),
-                          obscureText: true,
+                      ),
+                      TextFormField(
+                        controller: _passwordController,
+                        decoration: const InputDecoration(
+                            labelText: 'Mot de passe',
+                            prefixIcon: Icon(
+                              Icons.lock_outline,
+                              color: green,
+                            )),
+                        obscureText: true,
+                      ),
+                      const SizedBox(height: 16),
+                      GqButton(
+                        onPressed: _login,
+                        text: 'Se connecter',
+                      ),
+                      Text(
+                        _errorMessage,
+                        //faire un terner pour afficher en rouge si erreur et en vert si valid
+                        style: TextStyle(
+                          color:
+                              _errorMessage == '' ? Colors.green : Colors.red,
                         ),
-                        const SizedBox(height: 16),
-                        GqButton(
-                          onPressed: _login,
-                          text: 'Se connecter',
-                        ),
-                        Text(
-                          _errorMessage,
-                          //faire un terner pour afficher en rouge si erreur et en vert si valid
-                          style: TextStyle(
-                            color:
-                                _errorMessage == '' ? Colors.green : Colors.red,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],

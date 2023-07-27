@@ -6,7 +6,9 @@ class GqPageScaffold extends StatelessWidget {
     required this.title,
     required this.onBack,
     required this.body,
+    this.actions = const [],
     this.floatingActionButton,
+    this.scrollContainer = true,
     super.key,
   });
 
@@ -14,12 +16,15 @@ class GqPageScaffold extends StatelessWidget {
   final void Function() onBack;
   final Widget body;
   final Widget? floatingActionButton;
+  final bool scrollContainer;
+  final List<Widget> actions;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        actions: actions,
         title: Text(
           title,
           style: const TextStyle(color: green, fontWeight: FontWeight.bold),
@@ -31,7 +36,7 @@ class GqPageScaffold extends StatelessWidget {
         ),
         elevation: 0,
       ),
-      body: SingleChildScrollView(child: body),
+      body: scrollContainer ? SingleChildScrollView(child: body) : body,
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
