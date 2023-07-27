@@ -12,7 +12,7 @@ class ErrorScreen extends StatelessWidget {
     return GqPageScaffold(
         title: "Erreur",
         onBack: () {
-          context.pop();
+          context.go('/');
         },
         body: Center(
             child: Text(

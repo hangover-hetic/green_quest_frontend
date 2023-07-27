@@ -23,18 +23,17 @@ class FeedPostWidget extends StatelessWidget {
     if (imageUrl != null && imageUrl.isNotEmpty) {
       widgets.add(
         ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
-          ),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
           child: FadeInImage.memoryNetwork(
             height: 200,
+            width: double.infinity,
             placeholder: kTransparentImage,
             image: imageUrl,
             fit: BoxFit.fitWidth,
           ),
         ),
       );
+      widgets.add(const SizedBox(height: 10));
     }
     widgets.add(
       Padding(
@@ -42,25 +41,16 @@ class FeedPostWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  authorName,
-                  style: const TextStyle(color: Colors.grey),
-                ),
-                Text(
-                  createdAt,
-                  style: const TextStyle(color: Colors.grey),
-                )
-              ],
-            ),
+            Text(title,
+                style:
+                    const TextStyle(fontWeight: FontWeight.w500, fontSize: 16)),
+            const SizedBox(height: 5),
+            Text(content),
             const SizedBox(height: 10),
             Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              '$authorName, $createdAt',
+              style: const TextStyle(color: Colors.grey),
             ),
-            Text(content)
           ],
         ),
       ),
@@ -72,19 +62,9 @@ class FeedPostWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 2,
-            offset: const Offset(2, 3),
-          ),
-        ],
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
+          border: Border(bottom: BorderSide(color: Colors.grey.shade300))),
       child: Column(
-        children: getWidgets(),
+        children: [...getWidgets(), const SizedBox(height: 10)],
       ),
     );
   }
